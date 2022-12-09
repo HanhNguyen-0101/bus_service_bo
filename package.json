@@ -1,0 +1,31 @@
+{
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "gravatar": "^1.8.2",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "mkdirp": "^1.0.4",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.21.3"
+  },
+  "name": "bus_service_bo",
+  "version": "1.0.0",
+  "description": "book car service",
+  "main": "index.js",
+  "author": {
+    "name": "Alice Nguyen",
+    "email": "hanhnguyen.learning@gmail.com"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19",
+    "sequelize-cli": "^6.4.1"
+  }
+}

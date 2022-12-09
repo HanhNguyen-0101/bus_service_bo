@@ -1,0 +1,16 @@
+TUTORIAL
+
+BO: (my-node-app)
+File: config.json
+Run init: npm i
+Run server: npm run dev
+Run dummy data: sequelize
+- sequelize db:drop
+- sequelize db:create
+- sequelize db:migrate
+- sequelize db:seed:all
+-----------------------------------------
+FO: (my-react-app)
+File: configSetting.js
+Run init: npm i
+Run: npm start
