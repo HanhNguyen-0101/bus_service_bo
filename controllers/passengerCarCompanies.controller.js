@@ -1,6 +1,7 @@
-const { Op } = require("sequelize");
+const {
+  passengerCarCompanies,
+} = require("../services/passengerCarCompanies.service");
 const { DOMAIN } = require("../utils/constants");
-const { passengerCarCompanies } = require("./../models/index");
 
 const create = async (req, res) => {
   const { file } = req;
@@ -36,7 +37,8 @@ const getDetail = async (req, res) => {
   try {
     const foundItem = await passengerCarCompanies.findOne({
       where: {
-        id,
+        key: "id",
+        value: id,
       },
     });
     res.status(200).send(foundItem);
@@ -50,22 +52,21 @@ const update = async (req, res) => {
   const { file } = req;
   const { name, address, content, review, comments, description } = req.body;
   try {
-    const itemUpdated = await passengerCarCompanies.findOne({
+    const item = await passengerCarCompanies.findOne({
       where: {
-        id,
+        key: "id",
+        value: id,
       },
     });
-    if (file) {
-      itemUpdated.image =
-        itemUpdated.image + `;${DOMAIN}/${file.path}`;
-    }
-    itemUpdated.name = name;
-    itemUpdated.description = description;
-    itemUpdated.address = address;
-    itemUpdated.content = content;
-    itemUpdated.review = review;
-    itemUpdated.comments = comments;
-    await itemUpdated.save();
+    const itemUpdated = await passengerCarCompanies.update(id, {
+      image: file ? `${DOMAIN}/${file.path}` : item.image,
+      name: name || item.name,
+      description: description || item.description,
+      address: address || item.address,
+      content: content || item.content,
+      review: review || item.review,
+      comments: comments || item.comments,
+    });
     res.status(200).send(itemUpdated);
   } catch (error) {
     res.status(500).send(error);
@@ -75,14 +76,15 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   const { id } = req.params;
   try {
-    await vehicle.destroy({
-      where: {
-        passengerCarCompaniesId: id,
-      },
-    });
+    // await vehicle.destroy({
+    //   where: {
+    //     passengerCarCompaniesId: id,
+    //   },
+    // });
     await passengerCarCompanies.destroy({
       where: {
-        id,
+        key: "id",
+        value: id,
       },
     });
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
@@ -95,13 +97,15 @@ const uploadImgCompany = async (req, res) => {
   const { id } = req.params;
   const { file } = req;
   try {
-    const itemFound = await passengerCarCompanies.findOne({
+    const item = await passengerCarCompanies.findOne({
       where: {
-        id,
+        key: "id",
+        value: id,
       },
     });
-    itemFound.image = `${DOMAIN}/${file.path}`;
-    await itemFound.save();
+    const itemFound = await passengerCarCompanies.update(id, {
+      image: file ? `${DOMAIN}/${file.path}` : item.image,
+    });
     res.status(200).send(itemFound);
   } catch (error) {
     res.status(500).send(error);
@@ -112,28 +116,8 @@ const findByKeyword = async (req, res) => {
   try {
     const result = await passengerCarCompanies.findAll({
       where: {
-        [Op.or]: [
-          {
-            name: {
-              [Op.like]: `%${keyword}%`,
-            },
-          },
-          {
-            description: {
-              [Op.like]: `%${keyword}%`,
-            },
-          },
-          {
-            address: {
-              [Op.like]: `%${keyword}%`,
-            },
-          },
-          {
-            content: {
-              [Op.like]: `%${keyword}%`,
-            },
-          },
-        ],
+        key: "name",
+        value: keyword,
       },
     });
     res.status(200).send(result);

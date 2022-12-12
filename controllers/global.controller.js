@@ -43,37 +43,36 @@ const getAllPaymentMethod = async (req, res) => {
 const getDetailPaymentMethod = async (req, res) => {
   const { id } = req.params;
   try {
-    const item = await paymentMethod.findOne(id);
+    const item = await paymentMethod.findOne({
+      where: { key: "id", value: id },
+    });
     res.status(200).send(item);
   } catch (error) {
     res.status(500).send(error);
   }
 };
-// const updatePaymentMethod = async (req, res) => {
-//   const { id } = req.params;
-//   const { name, subTitle, promo, conditionLink, paymentIntro } = req.body;
-//   const { file } = req;
-//   try {
-//     const itemUpdated = await paymentMethod.findOne({
-//       where: {
-//         id,
-//       },
-//     });
-//     if (file) {
-//       const logo = `${DOMAIN}/${file.path}`;
-//       itemUpdated.logo = logo;
-//     }
-//     itemUpdated.name = name;
-//     itemUpdated.subTitle = subTitle;
-//     itemUpdated.promo = promo;
-//     itemUpdated.conditionLink = conditionLink;
-//     itemUpdated.paymentIntro = paymentIntro;
-//     await itemUpdated.save();
-//     res.status(200).send(itemUpdated);
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// };
+const updatePaymentMethod = async (req, res) => {
+  const { id } = req.params;
+  const { name, subTitle, promo, conditionLink, paymentIntro } = req.body;
+  const { file } = req;
+  try {
+    const item = await paymentMethod.findOne({
+      where: { key: "id", value: id },
+    });
+    const itemUpdated = await paymentMethod.update(id, {
+      ...item,
+      logo: file ? `${DOMAIN}/${file.path}` : item.logo,
+      name: name || item.name,
+      subTitle: subTitle || item.subTitle,
+      promo: promo || item.promo,
+      conditionLink: conditionLink || item.conditionLink,
+      paymentIntro: paymentIntro || item.paymentIntro,
+    });
+    res.status(200).send(itemUpdated);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 const removePaymentMethod = async (req, res) => {
   const { id } = req.params;
   try {
@@ -100,7 +99,9 @@ const getAllBusType = async (req, res) => {
 const getDetailBusType = async (req, res) => {
   const { id } = req.params;
   try {
-    const item = await busType.findOne(id);
+    const item = await busType.findOne({
+      where: { key: "id", value: id },
+    });
     res.status(200).send(item);
   } catch (error) {
     res.status(500).send(error);
@@ -114,11 +115,7 @@ const removeBusType = async (req, res) => {
     //     busTypeId: id,
     //   },
     // });
-    await busType.destroy({
-      where: {
-        id,
-      },
-    });
+    await busType.destroy(id);
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
@@ -133,20 +130,22 @@ const createBusType = async (req, res) => {
     res.status(500).send(error);
   }
 };
-// const updateBusType = async (req, res) => {
-//   const { id } = req.params;
-//   const { name } = req.body;
-//   try {
-//     const itemUpdated = await busType.findOne({
-//       where: { id },
-//     });
-//     itemUpdated.name = name;
-//     await itemUpdated.save();
-//     res.status(200).send(itemUpdated);
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// };
+const updateBusType = async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+  try {
+    const item = await busType.findOne({
+      where: { key: "id", value: id },
+    });
+    const itemUpdated = await busType.update(id, {
+      ...item,
+      name: name || item.name,
+    });
+    res.status(200).send(itemUpdated);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 // /******************User Type Table************************/
 const getAllUserType = async (req, res) => {
   try {
@@ -159,7 +158,9 @@ const getAllUserType = async (req, res) => {
 const getDetailUserType = async (req, res) => {
   const { id } = req.params;
   try {
-    const item = await userType.findOne(id);
+    const item = await userType.findOne({
+      where: { key: "id", value: id },
+    });
     res.status(200).send(item);
   } catch (error) {
     res.status(500).send(error);
@@ -173,11 +174,7 @@ const removeUserType = async (req, res) => {
     //     typeId: id,
     //   },
     // });
-    await userType.destroy({
-      where: {
-        id,
-      },
-    });
+    await userType.destroy(id);
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
@@ -192,20 +189,22 @@ const createUserType = async (req, res) => {
     res.status(500).send(error);
   }
 };
-// const updateUserType = async (req, res) => {
-//   const { id } = req.params;
-//   const { name } = req.body;
-//   try {
-//     const itemUpdated = await userType.findOne({
-//       where: { id },
-//     });
-//     itemUpdated.name = name;
-//     await itemUpdated.save();
-//     res.status(200).send(itemUpdated);
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// };
+const updateUserType = async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+  try {
+    const item = await userType.findOne({
+      where: { key: "id", value: id },
+    });
+    const itemUpdated = await userType.update(id, {
+      ...item,
+      name: name || item.name,
+    });
+    res.status(200).send(itemUpdated);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 // /******************Status Seat Table************************/
 const getAllStatusSeat = async (req, res) => {
   try {
@@ -218,7 +217,9 @@ const getAllStatusSeat = async (req, res) => {
 const getDetailStatusSeat = async (req, res) => {
   const { id } = req.params;
   try {
-    const item = await statusSeat.findOne(id);
+    const item = await statusSeat.findOne({
+      where: { key: "id", value: id },
+    });
     res.status(200).send(item);
   } catch (error) {
     res.status(500).send(error);
@@ -232,11 +233,7 @@ const removeStatusSeat = async (req, res) => {
     //     seatStatusId: id,
     //   },
     // });
-    await statusSeat.destroy({
-      where: {
-        id,
-      },
-    });
+    await statusSeat.destroy(id);
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
@@ -251,20 +248,22 @@ const createStatusSeat = async (req, res) => {
     res.status(500).send(error);
   }
 };
-// const updateStatusSeat = async (req, res) => {
-//   const { id } = req.params;
-//   const { name } = req.body;
-//   try {
-//     const itemUpdated = await statusSeat.findOne({
-//       where: { id },
-//     });
-//     itemUpdated.name = name;
-//     await itemUpdated.save();
-//     res.status(200).send(itemUpdated);
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// };
+const updateStatusSeat = async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+  try {
+    const item = await statusSeat.findOne({
+      where: { key: "id", value: id },
+    });
+    const itemUpdated = await statusSeat.update(id, {
+      ...item,
+      name: name || item.name,
+    });
+    res.status(200).send(itemUpdated);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 // /******************Banner Table************************/
 const createBanner = async (req, res) => {
   const { title, description, enable } = req.body;
@@ -293,43 +292,38 @@ const getAllBanner = async (req, res) => {
 const getDetailBanner = async (req, res) => {
   const { id } = req.params;
   try {
-    const item = await banner.findOne(id);
+    const item = await banner.findOne({
+      where: { key: "id", value: id },
+    });
     res.status(200).send(item);
   } catch (error) {
     res.status(500).send(error);
   }
 };
-// const updateBanner = async (req, res) => {
-//   const { id } = req.params;
-//   const { title, description, enable } = req.body;
-//   const { file } = req;
-//   try {
-//     const itemUpdated = await banner.findOne({
-//       where: {
-//         id,
-//       },
-//     });
-//     if (file) {
-//       const banner = `${DOMAIN}/${file.path}`;
-//       itemUpdated.banner = banner;
-//     }
-//     itemUpdated.title = title;
-//     itemUpdated.description = description;
-//     itemUpdated.enable = enable;
-//     await itemUpdated.save();
-//     res.status(200).send(itemUpdated);
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// };
+const updateBanner = async (req, res) => {
+  const { id } = req.params;
+  const { title, description, enable } = req.body;
+  const { file } = req;
+  try {
+    const item = await banner.findOne({
+      where: { key: "id", value: id },
+    });
+    const itemUpdated = await banner.update(id, {
+      ...item,
+      banner: file ? `${DOMAIN}/${file.path}` : item.banner,
+      title: title || item.title,
+      description: description || item.description,
+      enable: enable,
+    });
+    res.status(200).send(itemUpdated);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 const removeBanner = async (req, res) => {
   const { id } = req.params;
   try {
-    await banner.destroy({
-      where: {
-        id,
-      },
-    });
+    await banner.destroy(id);
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
@@ -338,8 +332,7 @@ const removeBanner = async (req, res) => {
 
 // /******************Article Table************************/
 const createArticle = async (req, res) => {
-  const { title, subTitle, hashtag, description, content, updatedAt } =
-    req.body;
+  const { title, subTitle, hashtag, description, content } = req.body;
   const { file } = req;
   try {
     const image = `${DOMAIN}/${file.path}`;
@@ -350,7 +343,6 @@ const createArticle = async (req, res) => {
       image,
       description,
       content,
-      updatedAt,
     });
     res.status(201).send(newItem);
   } catch (error) {
@@ -368,74 +360,66 @@ const getAllArticle = async (req, res) => {
 const getDetailArticle = async (req, res) => {
   const { id } = req.params;
   try {
-    const item = await article.findOne(id);
+    const item = await article.findOne({
+      where: { key: "id", value: id },
+    });
     res.status(200).send(item);
   } catch (error) {
     res.status(500).send(error);
   }
 };
-// const updateArticle = async (req, res) => {
-//   const { id } = req.params;
-//   const { title, subTitle, hashtag, description, content, updatedAt } =
-//     req.body;
-//   const { file } = req;
-//   try {
-//     const itemUpdated = await article.findOne({
-//       where: {
-//         id,
-//       },
-//     });
-//     if (file) {
-//       const image = `${DOMAIN}/${file.path}`;
-//       itemUpdated.image = image;
-//     }
-//     itemUpdated.title = title;
-//     itemUpdated.description = description;
-//     itemUpdated.subTitle = subTitle;
-//     itemUpdated.hashtag = hashtag;
-//     itemUpdated.content = content;
-//     itemUpdated.updatedAt = updatedAt;
-//     await itemUpdated.save();
-//     res.status(200).send(itemUpdated);
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// };
+const updateArticle = async (req, res) => {
+  const { id } = req.params;
+  const { title, subTitle, hashtag, description, content } = req.body;
+  const { file } = req;
+  try {
+    const item = await article.findOne({
+      where: { key: "id", value: id },
+    });
+    const itemUpdated = await article.update(id, {
+      ...item,
+      image: file ? `${DOMAIN}/${file.path}` : item.image,
+      title: title || item.title,
+      description: description || item.description,
+      subTitle: subTitle || item.subTitle,
+      hashtag: hashtag || item.hashtag,
+      content: content || item.content,
+    });
+    res.status(200).send(itemUpdated);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 const removeArticle = async (req, res) => {
   const { id } = req.params;
   try {
-    await article.destroy({
-      where: {
-        id,
-      },
-    });
+    await article.destroy(id);
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
   }
 };
-// const getArticleByHashtagSubTitle = async (req, res) => {
-//   const { hashTagId, subTitle } = req.params;
-//   try {
-//     const item = await article.findOne({
-//       where: {
-//         subTitle,
-//       },
-//     });
-//     const hashTag = item?.dataValues.hashtag;
-//     if (
-//       hashTag &&
-//       hashTagId &&
-//       JSON.parse(hashTag).includes(Number(hashTagId))
-//     ) {
-//       res.status(200).send(item);
-//     } else {
-//       res.status(404).send("Not found");
-//     }
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// };
+const getArticleByHashtagSubTitle = async (req, res) => {
+  const { hashTagId, subTitle } = req.params;
+  try {
+    const item = await article.findOne({
+      key: "subTitle",
+      value: subTitle,
+    });
+    const hashTag = item?.hashtag;
+    if (
+      hashTag &&
+      hashTagId &&
+      JSON.parse(hashTag).includes(Number(hashTagId))
+    ) {
+      res.status(200).send(item);
+    } else {
+      res.status(404).send("Not found");
+    }
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 
 // /******************PaymentStatus Table************************/
 const getAllPaymentStatus = async (req, res) => {
@@ -449,7 +433,9 @@ const getAllPaymentStatus = async (req, res) => {
 const getDetailPaymentStatus = async (req, res) => {
   const { id } = req.params;
   try {
-    const item = await PaymentStatus.findOne(id);
+    const item = await PaymentStatus.findOne({
+      where: { key: "id", value: id },
+    });
     res.status(200).send(item);
   } catch (error) {
     res.status(500).send(error);
@@ -463,11 +449,7 @@ const removePaymentStatus = async (req, res) => {
     //     paymentStatusId: id,
     //   },
     // });
-    await PaymentStatus.destroy({
-      where: {
-        id,
-      },
-    });
+    await PaymentStatus.destroy(id);
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
@@ -482,20 +464,22 @@ const createPaymentStatus = async (req, res) => {
     res.status(500).send(error);
   }
 };
-// const updatePaymentStatus = async (req, res) => {
-//   const { id } = req.params;
-//   const { name } = req.body;
-//   try {
-//     const itemUpdated = await PaymentStatus.findOne({
-//       where: { id },
-//     });
-//     itemUpdated.name = name;
-//     await itemUpdated.save();
-//     res.status(200).send(itemUpdated);
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// };
+const updatePaymentStatus = async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+  try {
+    const item = await PaymentStatus.findOne({
+      where: { key: "id", value: id },
+    });
+    const itemUpdated = await PaymentStatus.update(id, {
+      ...item,
+      name: name || item.name,
+    });
+    res.status(200).send(itemUpdated);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 
 // /******************OrderStatus Table************************/
 const getAllOrderStatus = async (req, res) => {
@@ -509,7 +493,9 @@ const getAllOrderStatus = async (req, res) => {
 const getDetailOrderStatus = async (req, res) => {
   const { id } = req.params;
   try {
-    const item = await OrderStatus.findOne(id);
+    const item = await OrderStatus.findOne({
+      where: { key: "id", value: id },
+    });
     res.status(200).send(item);
   } catch (error) {
     res.status(500).send(error);
@@ -523,11 +509,7 @@ const removeOrderStatus = async (req, res) => {
     //     orderStatusId: id,
     //   },
     // });
-    await OrderStatus.destroy({
-      where: {
-        id,
-      },
-    });
+    await OrderStatus.destroy(id);
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
@@ -542,20 +524,22 @@ const createOrderStatus = async (req, res) => {
     res.status(500).send(error);
   }
 };
-// const updateOrderStatus = async (req, res) => {
-//   const { id } = req.params;
-//   const { name } = req.body;
-//   try {
-//     const itemUpdated = await OrderStatus.findOne({
-//       where: { id },
-//     });
-//     itemUpdated.name = name;
-//     await itemUpdated.save();
-//     res.status(200).send(itemUpdated);
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// };
+const updateOrderStatus = async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+  try {
+    const item = await OrderStatus.findOne({
+      where: { key: "id", value: id },
+    });
+    const itemUpdated = await OrderStatus.update(id, {
+      ...item,
+      name: name || item.name,
+    });
+    res.status(200).send(itemUpdated);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 // /******************Province Table************************/
 const getAllProvince = async (req, res) => {
   try {
@@ -568,7 +552,9 @@ const getAllProvince = async (req, res) => {
 const getDetailProvince = async (req, res) => {
   const { id } = req.params;
   try {
-    const item = await Province.findOne(id);
+    const item = await Province.findOne({
+      where: { key: "id", value: id },
+    });
     res.status(200).send(item);
   } catch (error) {
     res.status(500).send(error);
@@ -582,11 +568,7 @@ const removeProvince = async (req, res) => {
     //     provinceId: id,
     //   },
     // });
-    await Province.destroy({
-      where: {
-        id,
-      },
-    });
+    await Province.destroy(id);
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
@@ -601,20 +583,22 @@ const createProvince = async (req, res) => {
     res.status(500).send(error);
   }
 };
-// const updateProvince = async (req, res) => {
-//   const { id } = req.params;
-//   const { name } = req.body;
-//   try {
-//     const itemUpdated = await Province.findOne({
-//       where: { id },
-//     });
-//     itemUpdated.name = name;
-//     await itemUpdated.save();
-//     res.status(200).send(itemUpdated);
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// };
+const updateProvince = async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+  try {
+    const item = await Province.findOne({
+      where: { key: "id", value: id },
+    });
+    const itemUpdated = await Province.update(id, {
+      ...item,
+      name: name || item.name,
+    });
+    res.status(200).send(itemUpdated);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 // ///////////////////////////Not process relationship when delete yet//////////////////////////////
 // /******************Point Table************************/
 const getAllPoint = async (req, res) => {
@@ -628,7 +612,9 @@ const getAllPoint = async (req, res) => {
 const getDetailPoint = async (req, res) => {
   const { id } = req.params;
   try {
-    const item = await Point.findOne(id);
+    const item = await Point.findOne({
+      where: { key: "id", value: id },
+    });
     res.status(200).send(item);
   } catch (error) {
     res.status(500).send(error);
@@ -637,11 +623,7 @@ const getDetailPoint = async (req, res) => {
 const removePoint = async (req, res) => {
   const { id } = req.params;
   try {
-    await Point.destroy({
-      where: {
-        id,
-      },
-    });
+    await Point.destroy(id);
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
@@ -650,30 +632,38 @@ const removePoint = async (req, res) => {
 const createPoint = async (req, res) => {
   const { address, position, time, station, shuttle } = req.body;
   try {
-    const newItem = await Point.create({ address, position, time, station, shuttle });
+    const newItem = await Point.create({
+      address,
+      position,
+      time,
+      station,
+      shuttle,
+    });
     res.status(201).send(newItem);
   } catch (error) {
     res.status(500).send(error);
   }
 };
-// const updatePoint = async (req, res) => {
-//   const { id } = req.params;
-//   const { address, position, time, station, shuttle } = req.body;
-//   try {
-//     const itemUpdated = await Point.findOne({
-//       where: { id },
-//     });
-//     itemUpdated.address = address;
-//     itemUpdated.position = position;
-//     itemUpdated.time = time;
-//     itemUpdated.station = station;
-//     itemUpdated.shuttle = shuttle;
-//     await itemUpdated.save();
-//     res.status(200).send(itemUpdated);
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// };
+const updatePoint = async (req, res) => {
+  const { id } = req.params;
+  const { address, position, time, station, shuttle } = req.body;
+  try {
+    const item = await Point.findOne({
+      where: { key: "id", value: id },
+    });
+    const itemUpdated = await Point.update(id, {
+      ...item,
+      address: address || item.address,
+      position: position || item.position,
+      time: time || item.time,
+      station: station || item.station,
+      shuttle: shuttle,
+    });
+    res.status(200).send(itemUpdated);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 
 // /******************Hashtag Table************************/
 const getAllHashTag = async (req, res) => {
@@ -687,33 +677,30 @@ const getAllHashTag = async (req, res) => {
 const getDetailHashTag = async (req, res) => {
   const { id } = req.params;
   try {
-    const item = await hashTag.findOne(id);
+    const item = await hashTag.findOne({
+      where: { key: "id", value: id },
+    });
     res.status(200).send(item);
   } catch (error) {
     res.status(500).send(error);
   }
 };
-// const getDetailHashTagByName = async (req, res) => {
-//   const { name } = req.params;
-//   try {
-//     const item = await hashTag.findOne({
-//       where: {
-//         name,
-//       },
-//     });
-//     res.status(200).send(item);
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// };
+const getDetailHashTagByName = async (req, res) => {
+  const { name } = req.params;
+  try {
+    const item = await hashTag.findOne({
+      key: "name",
+      value: name,
+    });
+    res.status(200).send(item);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 const removeHashTag = async (req, res) => {
   const { id } = req.params;
   try {
-    await hashTag.destroy({
-      where: {
-        id,
-      },
-    });
+    await hashTag.destroy(id);
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
@@ -728,76 +715,78 @@ const createHashTag = async (req, res) => {
     res.status(500).send(error);
   }
 };
-// const updateHashTag = async (req, res) => {
-//   const { id } = req.params;
-//   const { name } = req.body;
-//   try {
-//     const itemUpdated = await hashTag.findOne({
-//       where: { id },
-//     });
-//     itemUpdated.name = name;
-//     await itemUpdated.save();
-//     res.status(200).send(itemUpdated);
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// };
+const updateHashTag = async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+  try {
+    const item = await hashTag.findOne({
+      where: { key: "id", value: id },
+    });
+    const itemUpdated = await hashTag.update(id, {
+      ...item,
+      name: name || item.name,
+    });
+    res.status(200).send(itemUpdated);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 module.exports = {
   createPaymentMethod,
   getAllPaymentMethod,
   getDetailPaymentMethod,
-  // updatePaymentMethod,
+  updatePaymentMethod,
   removePaymentMethod,
   createBusType,
   getAllBusType,
   getDetailBusType,
-  // updateBusType,
+  updateBusType,
   removeBusType,
   createUserType,
   getAllUserType,
   getDetailUserType,
-  // updateUserType,
+  updateUserType,
   removeUserType,
   createStatusSeat,
   getAllStatusSeat,
   getDetailStatusSeat,
-  // updateStatusSeat,
+  updateStatusSeat,
   removeStatusSeat,
   createProvince,
   getAllProvince,
   getDetailProvince,
-  // updateProvince,
+  updateProvince,
   removeProvince,
   createPoint,
   getAllPoint,
   getDetailPoint,
-  // updatePoint,
+  updatePoint,
   removePoint,
   createPaymentStatus,
   getAllPaymentStatus,
   getDetailPaymentStatus,
-  // updatePaymentStatus,
+  updatePaymentStatus,
   removePaymentStatus,
   createOrderStatus,
   getAllOrderStatus,
   getDetailOrderStatus,
-  // updateOrderStatus,
+  updateOrderStatus,
   removeOrderStatus,
   createHashTag,
   getAllHashTag,
   getDetailHashTag,
-  // getDetailHashTagByName,
-  // updateHashTag,
+  getDetailHashTagByName,
+  updateHashTag,
   removeHashTag,
   createBanner,
   getAllBanner,
   getDetailBanner,
-  // updateBanner,
+  updateBanner,
   removeBanner,
   createArticle,
   getAllArticle,
   getDetailArticle,
-  // updateArticle,
+  updateArticle,
   removeArticle,
-  // getArticleByHashtagSubTitle,
+  getArticleByHashtagSubTitle,
 };

@@ -10,13 +10,13 @@ const {
   uploadAvatar,
   findUserByKeyword
 } = require("../controllers/user.controller");
-const { User } = require("./../models/index");
 const { checkExits } = require("../middlewares/validate/checkExist");
 const { authenticate } = require("../middlewares/validate/authenticate");
 const { USER_TYPE } = require("../utils/constants");
 const { authorize } = require("../middlewares/validate/authorize");
 const { checkPasswordValid } = require("../middlewares/validate/checkValid");
 const { uploadImage } = require("../middlewares/upload/uploadImage");
+const { User } = require("../services/user.service");
 
 const userRouter = express.Router();
 

@@ -2,8 +2,9 @@ const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const gravatar = require("gravatar");
-const { User, userType } = require("./../models/index");
 const { SECRET, DOMAIN } = require("../utils/constants");
+const { User } = require("../services/user.service");
+const { userType } = require("../services/global.service");
 
 const register = async (req, res) => {
   const { name, email, password, numberPhone } = req.body;
@@ -22,14 +23,20 @@ const register = async (req, res) => {
     res.status(500).send(error);
   }
 };
-
 const login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({
-      include: [{ model: userType, as: "typeObj" }],
+      include: [
+        {
+          model: userType,
+          as: "typeObj",
+          map: "typeId",
+        },
+      ],
       where: {
-        email,
+        key: "email",
+        value: email,
       },
     });
     if (user) {
@@ -77,71 +84,80 @@ const editUser = async (req, res) => {
   const { id } = req.params;
   const { file } = req;
   try {
-    const user = await User.findOne({
-      where: { id },
+    const userItem = await User.findOne({
+      where: { key: "id", value: id },
     });
-    if (file) {
-      const avatar = `${DOMAIN}/${file.path}`;
-      user.avatar = avatar;
-    }
-    user.name = name;
-    user.email = email;
-    user.phone = numberPhone;
-    if (password !== user.password) {
+    const item = {
+      name: name || userItem.name,
+      email: email || userItem.email,
+      phone: numberPhone || userItem.phone,
+      typeId: typeId || userItem.typeId,
+      avatar: file ? `${DOMAIN}/${file.path}` : userItem.avatar,
+    };
+    if (password !== userItem.password) {
       const salt = bcrypt.genSaltSync(10);
       const hashPassword = bcrypt.hashSync(password, salt);
-      user.password = hashPassword;
+      item.password = hashPassword;
     } else {
-      user.password = password;
+      item.password = password;
     }
-    user.typeId = typeId;
-    await user.save();
+    const user = await User.update(id, item);
     res.status(200).send(user);
   } catch (error) {
     res.status(500).send(error);
   }
 };
-
 const deleteUser = async (req, res) => {
   const { id } = req.params;
   try {
-    await User.destroy({
-      where: {
-        id,
-      },
-    });
+    await User.destroy(id);
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
   }
 };
-
 const getAllUser = async (req, res) => {
   const { name, email } = req.query;
   try {
     if (email) {
       const users = await User.findAll({
-        include: [{ model: userType, as: "typeObj" }],
-        where: {
-          email: {
-            [Op.like]: `%${email}%`,
+        include: [
+          {
+            model: userType,
+            as: "typeObj",
+            map: "typeId",
           },
+        ],
+        where: {
+          key: "email",
+          value: email,
         },
       });
       res.status(200).send(users);
     } else if (name) {
       const users = await User.findAll({
-        include: [{ model: userType, as: "typeObj" }],
-        where: {
-          name: {
-            [Op.like]: `%${name}%`,
+        include: [
+          {
+            model: userType,
+            as: "typeObj",
+            map: "typeId",
           },
+        ],
+        where: {
+          key: "name",
+          value: name,
         },
       });
       res.status(200).send(users);
     } else {
       const users = await User.findAll({
-        include: [{ model: userType, as: "typeObj" }],
+        include: [
+          {
+            model: userType,
+            as: "typeObj",
+            map: "typeId",
+          },
+        ],
       });
       res.status(200).send(users);
     }
@@ -149,14 +165,20 @@ const getAllUser = async (req, res) => {
     res.status(500).send(error);
   }
 };
-
 const getUserDetail = async (req, res) => {
   const { id } = req.params;
   try {
     const user = await User.findOne({
-      include: [{ model: userType, as: "typeObj" }],
+      include: [
+        {
+          model: userType,
+          as: "typeObj",
+          map: "typeId",
+        },
+      ],
       where: {
-        id,
+        key: "id",
+        value: id,
       },
     });
     res.status(200).send(user);
@@ -164,17 +186,18 @@ const getUserDetail = async (req, res) => {
     res.status(500).send(error);
   }
 };
-
 const uploadAvatar = async (req, res) => {
   const { user, file } = req;
   try {
-    const userFound = await User.findOne({
+    const userItem = await User.findOne({
       where: {
-        email: user.email,
+        key: "email",
+        value: user.email,
       },
     });
-    userFound.avatar = `${DOMAIN}/${file.path}`;
-    await userFound.save();
+    const userFound = await User.update(userItem.id, {
+      avatar: `${DOMAIN}/${file.path}`,
+    });
     res.status(200).send(userFound);
   } catch (error) {
     res.status(500).send(error);
@@ -184,25 +207,16 @@ const findUserByKeyword = async (req, res) => {
   const { keyword } = req.params;
   try {
     const user = await User.findAll({
-      include: [{ model: userType, as: "typeObj" }],
+      include: [
+        {
+          model: userType,
+          as: "typeObj",
+          map: "typeId",
+        },
+      ],
       where: {
-        [Op.or]: [
-          {
-            email: {
-              [Op.like]: `%${keyword}%`,
-            },
-          },
-          {
-            name: {
-              [Op.like]: `%${keyword}%`,
-            },
-          },
-          {
-            phone: {
-              [Op.like]: `%${keyword}%`,
-            },
-          },
-        ],
+        key: "email",
+        value: keyword,
       },
     });
     res.status(200).send(user);

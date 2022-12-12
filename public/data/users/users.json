@@ -8,13 +8,7 @@
         "phone": "0987654321",
         "createdAt": "2022-08-17T02:03:16.000Z",
         "updatedAt": "2022-10-18T04:36:58.000Z",
-        "typeId": 1,
-        "typeObj": {
-            "id": 1,
-            "name": "admin",
-            "createdAt": "2022-08-17T02:03:16.000Z",
-            "updatedAt": "2022-08-17T02:21:41.000Z"
-        }
+        "typeId": 1
     },
     {
         "id": 2,
@@ -25,13 +19,7 @@
         "phone": "0987654321",
         "createdAt": "2022-08-17T02:03:16.000Z",
         "updatedAt": "2022-08-17T02:21:41.000Z",
-        "typeId": 2,
-        "typeObj": {
-            "id": 2,
-            "name": "client",
-            "createdAt": "2022-08-17T02:03:16.000Z",
-            "updatedAt": "2022-08-17T02:21:41.000Z"
-        }
+        "typeId": 2
     },
     {
         "id": 3,
@@ -42,12 +30,6 @@
         "phone": "0987654321",
         "createdAt": "2022-08-17T02:03:16.000Z",
         "updatedAt": "2022-08-17T02:21:41.000Z",
-        "typeId": 2,
-        "typeObj": {
-            "id": 2,
-            "name": "client",
-            "createdAt": "2022-08-17T02:03:16.000Z",
-            "updatedAt": "2022-08-17T02:21:41.000Z"
-        }
+        "typeId": 2
     }
 ]

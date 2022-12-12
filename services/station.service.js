@@ -2,7 +2,7 @@ const lodash = require("lodash");
 const fs = require("fs");
 
 const getURL = (url) => {
-  return `./public/data/global/${url}.json`;
+  return `./public/data/stations/${url}.json`;
 };
 const getData = async (url) => {
   const path = getURL(url);
@@ -128,81 +128,11 @@ const update = async (url, id, item) => {
 };
 
 module.exports = {
-  paymentMethod: {
-    findAll: () => findAll("payment-method"),
-    findOne: (obj) => findOne("payment-method", obj),
-    destroy: (id) => destroy("payment-method", id),
-    create: (item) => create("payment-method", item),
-    update: (item) => update("payment-method", id, item),
-  },
-  busType: {
-    findAll: () => findAll("bus-type"),
-    findOne: (obj) => findOne("bus-type", obj),
-    destroy: (id) => destroy("bus-type", id),
-    create: (item) => create("bus-type", item),
-    update: (id, item) => update("bus-type", id, item),
-  },
-  userType: {
-    findAll: () => findAll("user-type"),
-    findOne: (obj) => findOne("user-type", obj),
-    destroy: (id) => destroy("user-type", id),
-    create: (item) => create("user-type", item),
-    update: (id, item) => update("user-type", id, item),
-  },
-  statusSeat: {
-    findAll: () => findAll("status-seat"),
-    findOne: (obj) => findOne("status-seat", obj),
-    destroy: (id) => findOne("status-seat", id),
-    create: (item) => create("status-seat", item),
-    update: (id, item) => update("status-seat", id, item),
-  },
-  Province: {
-    findAll: () => findAll("province"),
-    findOne: (obj) => findOne("province", obj),
-    destroy: (id) => destroy("province", id),
-    create: (item) => create("province", item),
-    update: (id, item) => update("province", id, item),
-  },
-  Point: {
-    findAll: () => findAll("point"),
-    findOne: (obj) => findOne("point", obj),
-    destroy: (id) => destroy("point", id),
-    create: (item) => create("point", item),
-    update: (id, item) => update("point", id, item),
-  },
-  PaymentStatus: {
-    findAll: () => findAll("payment-status"),
-    findOne: (obj) => findOne("payment-status", obj),
-    destroy: (id) => destroy("payment-status", id),
-    create: (item) => create("payment-status", item),
-    update: (id, item) => update("payment-status", id, item),
-  },
-  OrderStatus: {
-    findAll: () => findAll("order-status"),
-    findOne: (obj) => findOne("order-status", obj),
-    destroy: (id) => destroy("order-status", id),
-    create: (item) => create("order-status", item),
-    update: (id, item) => update("order-status", id, item),
-  },
-  hashTag: {
-    findAll: () => findAll("hashtag"),
-    findOne: (obj) => findOne("hashTag", obj),
-    destroy: (id) => destroy("hashTag", id),
-    create: (item) => create("hashTag", item),
-    update: (id, item) => update("hashTag", id, item),
-  },
-  banner: {
-    findAll: () => findAll("banner"),
-    findOne: (obj) => findOne("banner", obj),
-    destroy: (id) => destroy("banner", id),
-    create: (item) => create("banner", item),
-    update: (id, item) => update("banner", id, item),
-  },
-  article: {
-    findAll: () => findAll("article"),
-    findOne: (obj) => findOne("article", obj),
-    destroy: (id) => destroy("article", id),
-    create: (item) => create("article", item),
-    update: (id, item) => update("article", id, item),
+  Station: {
+    findAll: (obj) => findAll("stations", obj),
+    findOne: (obj) => findOne("stations", obj),
+    destroy: (id) => destroy("stations", id),
+    create: (item) => create("stations", item),
+    update: (id, item) => update("stations", id, item),
   },
 };
