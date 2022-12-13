@@ -92,9 +92,12 @@ const findOne = async (url, obj) => {
   }
 };
 
-const destroy = async (url, id) => {
+const destroy = async (url, obj) => {
   const data = await getData(url);
-  const index = await lodash.findIndex(data, (i) => i.id === Number(id));
+  const { where } = obj;
+  const { key, value } = where;
+
+  const index = await lodash.findIndex(data, (i) => i[key] === Number(value));
   if (index !== -1) {
     data.splice(index, 1);
     await updateData(url, data);
@@ -142,126 +145,126 @@ module.exports = {
   paymentMethod: {
     findAll: () => findAll("global/payment-method"),
     findOne: (obj) => findOne("global/payment-method", obj),
-    destroy: (id) => destroy("global/payment-method", id),
+    destroy: (obj) => destroy("global/payment-method", obj),
     create: (item) => create("global/payment-method", item),
     update: (item) => update("global/payment-method", id, item),
   },
   busType: {
     findAll: () => findAll("global/bus-type"),
     findOne: (obj) => findOne("global/bus-type", obj),
-    destroy: (id) => destroy("global/bus-type", id),
+    destroy: (obj) => destroy("global/bus-type", obj),
     create: (item) => create("global/bus-type", item),
     update: (id, item) => update("global/bus-type", id, item),
   },
   userType: {
     findAll: () => findAll("global/user-type"),
     findOne: (obj) => findOne("global/user-type", obj),
-    destroy: (id) => destroy("global/user-type", id),
+    destroy: (obj) => destroy("global/user-type", obj),
     create: (item) => create("global/user-type", item),
     update: (id, item) => update("global/user-type", id, item),
   },
   statusSeat: {
     findAll: () => findAll("global/status-seat"),
     findOne: (obj) => findOne("global/status-seat", obj),
-    destroy: (id) => findOne("global/status-seat", id),
+    destroy: (obj) => findOne("global/status-seat", obj),
     create: (item) => create("global/status-seat", item),
     update: (id, item) => update("global/status-seat", id, item),
   },
   Province: {
     findAll: () => findAll("global/province"),
     findOne: (obj) => findOne("global/province", obj),
-    destroy: (id) => destroy("global/province", id),
+    destroy: (obj) => destroy("global/province", obj),
     create: (item) => create("global/province", item),
     update: (id, item) => update("global/province", id, item),
   },
   Point: {
     findAll: () => findAll("global/point"),
     findOne: (obj) => findOne("global/point", obj),
-    destroy: (id) => destroy("global/point", id),
+    destroy: (obj) => destroy("global/point", obj),
     create: (item) => create("global/point", item),
     update: (id, item) => update("global/point", id, item),
   },
   PaymentStatus: {
     findAll: () => findAll("global/payment-status"),
     findOne: (obj) => findOne("global/payment-status", obj),
-    destroy: (id) => destroy("global/payment-status", id),
+    destroy: (obj) => destroy("global/payment-status", obj),
     create: (item) => create("global/payment-status", item),
     update: (id, item) => update("global/payment-status", id, item),
   },
   OrderStatus: {
     findAll: () => findAll("global/order-status"),
     findOne: (obj) => findOne("global/order-status", obj),
-    destroy: (id) => destroy("global/order-status", id),
+    destroy: (obj) => destroy("global/order-status", obj),
     create: (item) => create("global/order-status", item),
     update: (id, item) => update("global/order-status", id, item),
   },
   hashTag: {
     findAll: () => findAll("global/hashtag"),
     findOne: (obj) => findOne("global/hashTag", obj),
-    destroy: (id) => destroy("global/hashTag", id),
+    destroy: (obj) => destroy("global/hashTag", obj),
     create: (item) => create("global/hashTag", item),
     update: (id, item) => update("global/hashTag", id, item),
   },
   banner: {
     findAll: () => findAll("global/banner"),
     findOne: (obj) => findOne("global/banner", obj),
-    destroy: (id) => destroy("global/banner", id),
+    destroy: (obj) => destroy("global/banner", obj),
     create: (item) => create("global/banner", item),
     update: (id, item) => update("global/banner", id, item),
   },
   article: {
     findAll: () => findAll("global/article"),
     findOne: (obj) => findOne("global/article", obj),
-    destroy: (id) => destroy("global/article", id),
+    destroy: (obj) => destroy("global/article", obj),
     create: (item) => create("global/article", item),
     update: (id, item) => update("global/article", id, item),
   },
   passengerCarCompanies: {
     findAll: (obj) => findAll("passengerCarCompanies/passengerCarCompanies", obj),
     findOne: (obj) => findOne("passengerCarCompanies/passengerCarCompanies", obj),
-    destroy: (id) => destroy("passengerCarCompanies/passengerCarCompanies", id),
+    destroy: (obj) => destroy("passengerCarCompanies/passengerCarCompanies", obj),
     create: (item) => create("passengerCarCompanies/passengerCarCompanies", item),
     update: (id, item) => update("passengerCarCompanies/passengerCarCompanies", id, item),
   },
   Station: {
     findAll: (obj) => findAll("stations/stations", obj),
     findOne: (obj) => findOne("stations/stations", obj),
-    destroy: (id) => destroy("stations/stations", id),
+    destroy: (obj) => destroy("stations/stations", obj),
     create: (item) => create("stations/stations", item),
     update: (id, item) => update("stations/stations", id, item),
   },
   Ticket: {
     findAll: (obj) => findAll("tickets/tickets", obj),
     findOne: (obj) => findOne("tickets/tickets", obj),
-    destroy: (id) => destroy("tickets/tickets", id),
+    destroy: (obj) => destroy("tickets/tickets", obj),
     create: (item) => create("tickets/tickets", item),
     update: (id, item) => update("tickets/tickets", id, item),
   },
   Trip: {
     findAll: (obj) => findAll("trips/trips", obj),
     findOne: (obj) => findOne("trips/trips", obj),
-    destroy: (id) => destroy("trips/trips", id),
+    destroy: (obj) => destroy("trips/trips", obj),
     create: (item) => create("trips/trips", item),
     update: (id, item) => update("trips/trips", id, item),
   },
   User: {
     findAll: (obj) => findAll("users/users", obj),
     findOne: (obj) => findOne("users/users", obj),
-    destroy: (id) => destroy("users/users", id),
+    destroy: (obj) => destroy("users/users", obj),
     create: (item) => create("users/users", item),
     update: (id, item) => update("users/users", id, item),
   },
   vehicle: {
     findAll: (obj) => findAll("vehicles/vehicles", obj),
     findOne: (obj) => findOne("vehicles/vehicles", obj),
-    destroy: (id) => destroy("vehicles/vehicles", id),
+    destroy: (obj) => destroy("vehicles/vehicles", obj),
     create: (item) => create("vehicles/vehicles", item),
     update: (id, item) => update("vehicles/vehicles", id, item),
   },
   seat: {
     findAll: (obj) => findAll("seats/seats", obj),
     findOne: (obj) => findOne("seats/seats", obj),
-    destroy: (id) => destroy("seats/seats", id),
+    destroy: (obj) => destroy("seats/seats", obj),
     create: (item) => create("seats/seats", item),
     update: (id, item) => update("seats/seats", id, item),
   },

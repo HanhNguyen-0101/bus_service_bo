@@ -76,12 +76,8 @@ const updatePaymentMethod = async (req, res) => {
 const removePaymentMethod = async (req, res) => {
   const { id } = req.params;
   try {
-    // await Ticket.destroy({
-    //   where: {
-    //     paymentMethodId: id,
-    //   },
-    // });
-    await paymentMethod.destroy(id);
+    await Ticket.destroy({ where: { key: "paymentMethodId", value: id } });
+    await paymentMethod.destroy({ where: { key: "id", value: id } });
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
@@ -110,13 +106,8 @@ const getDetailBusType = async (req, res) => {
 const removeBusType = async (req, res) => {
   const { id } = req.params;
   try {
-    await vehicle.destroy({
-      where: {
-        key: "busTypeId",
-        value: id,
-      },
-    });
-    await busType.destroy(id);
+    await vehicle.destroy({ where: { key: "busTypeId", value: id } });
+    await busType.destroy({ where: { key: "id", value: id } });
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
@@ -170,13 +161,8 @@ const getDetailUserType = async (req, res) => {
 const removeUserType = async (req, res) => {
   const { id } = req.params;
   try {
-    await User.destroy({
-      where: {
-        key: "typeId",
-        value: id,
-      },
-    });
-    await userType.destroy(id);
+    await User.destroy({ where: { key: "typeId", value: id } });
+    await userType.destroy({ where: { key: "id", value: id } });
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
@@ -230,12 +216,8 @@ const getDetailStatusSeat = async (req, res) => {
 const removeStatusSeat = async (req, res) => {
   const { id } = req.params;
   try {
-    // await seat.destroy({
-    //   where: {
-    //     seatStatusId: id,
-    //   },
-    // });
-    await statusSeat.destroy(id);
+    await seat.destroy({ where: { key: "seatStatusId", value: id } });
+    await statusSeat.destroy({ where: { key: "id", value: id } });
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
@@ -325,7 +307,7 @@ const updateBanner = async (req, res) => {
 const removeBanner = async (req, res) => {
   const { id } = req.params;
   try {
-    await banner.destroy(id);
+    await banner.destroy({ where: { key: "id", value: id } });
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
@@ -395,7 +377,7 @@ const updateArticle = async (req, res) => {
 const removeArticle = async (req, res) => {
   const { id } = req.params;
   try {
-    await article.destroy(id);
+    await article.destroy({ where: { key: "id", value: id } });
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
@@ -446,12 +428,8 @@ const getDetailPaymentStatus = async (req, res) => {
 const removePaymentStatus = async (req, res) => {
   const { id } = req.params;
   try {
-    // await Ticket.destroy({
-    //   where: {
-    //     paymentStatusId: id,
-    //   },
-    // });
-    await PaymentStatus.destroy(id);
+    await Ticket.destroy({ where: { key: "paymentStatusId", value: id } });
+    await PaymentStatus.destroy({ where: { key: "id", value: id } });
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
@@ -506,12 +484,8 @@ const getDetailOrderStatus = async (req, res) => {
 const removeOrderStatus = async (req, res) => {
   const { id } = req.params;
   try {
-    // await Ticket.destroy({
-    //   where: {
-    //     orderStatusId: id,
-    //   },
-    // });
-    await OrderStatus.destroy(id);
+    await Ticket.destroy({ where: { key: "orderStatusId", value: id } });
+    await OrderStatus.destroy({ where: { key: "id", value: id } });
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
@@ -565,13 +539,8 @@ const getDetailProvince = async (req, res) => {
 const removeProvince = async (req, res) => {
   const { id } = req.params;
   try {
-    await Station.destroy({
-      where: {
-        key: "provinceId",
-        value: id,
-      },
-    });
-    await Province.destroy(id);
+    await Station.destroy({ where: { key: "provinceId", value: id } });
+    await Province.destroy({ where: { key: "id", value: id } });
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
@@ -626,7 +595,7 @@ const getDetailPoint = async (req, res) => {
 const removePoint = async (req, res) => {
   const { id } = req.params;
   try {
-    await Point.destroy(id);
+    await Point.destroy({ where: { key: "id", value: id } });
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
@@ -703,7 +672,7 @@ const getDetailHashTagByName = async (req, res) => {
 const removeHashTag = async (req, res) => {
   const { id } = req.params;
   try {
-    await hashTag.destroy(id);
+    await hashTag.destroy({ where: { key: "id", value: id } });
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);

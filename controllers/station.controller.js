@@ -87,12 +87,7 @@ const deleteStation = async (req, res) => {
     //     [Op.or]: [{ fromStation: id }, { toStation: id }],
     //   },
     // });
-    await Station.destroy({
-      where: {
-        key: "id",
-        value: id,
-      },
-    });
+    await Station.destroy({ where: { key: "id", value: id } });
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);
@@ -105,7 +100,7 @@ const findStationByKeyword = async (req, res) => {
       include: [{ model: Province, as: "stationProvince", map: "provinceId" }],
       where: {
         key: "name",
-        value: keyword
+        value: keyword,
       },
     });
     res.status(200).send(item);

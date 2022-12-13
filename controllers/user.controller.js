@@ -108,7 +108,7 @@ const editUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   const { id } = req.params;
   try {
-    await User.destroy(id);
+    await User.destroy({ where: { key: "id", value: id } });
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
     res.status(500).send(error);

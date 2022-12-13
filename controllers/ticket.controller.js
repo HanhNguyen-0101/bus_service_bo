@@ -4,7 +4,7 @@ const {
   PaymentStatus,
   busType,
   passengerCarCompanies,
-  Station, Ticket, Trip, vehicle
+  Station, Ticket, Trip, vehicle, seat
 } = require("../services/index.service");
 
 const create = async (req, res) => {
@@ -35,17 +35,18 @@ const create = async (req, res) => {
       note,
       paymentStatusId,
     });
-    // if (seatSelected && JSON.parse(seatSelected).length) {
-    //   JSON.parse(seatSelected).map(async (i) => {
-    //     const seatUpdated = await seat.findOne({
-    //       where: {
-    //         id: i,
-    //       },
-    //     });
-    //     seatUpdated.seatStatusId = 2;
-    //     await seatUpdated.save();
-    //   });
-    // }
+    if (seatSelected && JSON.parse(seatSelected).length) {
+      JSON.parse(seatSelected).map(async (i) => {
+        const seatUpdated = await seat.findOne({
+          where: {
+            key: "id",
+            value: i,
+          },
+        });
+        seatUpdated.seatStatusId = 2;
+        await seat.update(i, seatUpdated);
+      });
+    }
     res.status(201).send(ticket);
   } catch (error) {
     res.status(500).send(error);
@@ -174,28 +175,30 @@ const edit = async (req, res) => {
     ticket.identify = identify;
     ticket.numberPhone = numberPhone;
     ticket.vehicledId = vehicledId;
-    // if (ticket.seatSelected && JSON.parse(ticket.seatSelected).length) {
-    //   JSON.parse(ticket.seatSelected).map(async (i) => {
-    //     const seatUpdated = await seat.findOne({
-    //       where: {
-    //         id: i,
-    //       },
-    //     });
-    //     seatUpdated.seatStatusId = 1;
-    //     await seatUpdated.save();
-    //   });
-    // }
-    // if (seatSelected && JSON.parse(seatSelected).length) {
-    //   JSON.parse(seatSelected).map(async (i) => {
-    //     const seatUpdated = await seat.findOne({
-    //       where: {
-    //         id: i,
-    //       },
-    //     });
-    //     seatUpdated.seatStatusId = 2;
-    //     await seatUpdated.save();
-    //   });
-    // }
+    if (ticket.seatSelected && JSON.parse(ticket.seatSelected).length) {
+      JSON.parse(ticket.seatSelected).map(async (i) => {
+        const seatUpdated = await seat.findOne({
+          where: {
+            key: "id",
+            value: i,
+          },
+        });
+        seatUpdated.seatStatusId = 1;
+        await seat.update(i, seatUpdated);
+      });
+    }
+    if (seatSelected && JSON.parse(seatSelected).length) {
+      JSON.parse(seatSelected).map(async (i) => {
+        const seatUpdated = await seat.findOne({
+          where: {
+            key: "id",
+            value: i,
+          },
+        });
+        seatUpdated.seatStatusId = 2;
+        await seat.update(i, seatUpdated);
+      });
+    }
     ticket.seatSelected = seatSelected;
     ticket.orderStatusId = orderStatusId;
     ticket.paymentMethodId = paymentMethodId;
@@ -218,17 +221,18 @@ const remove = async (req, res) => {
         value: id
       },
     });
-    // if (ticket.seatSelected && JSON.parse(ticket.seatSelected).length) {
-    //   JSON.parse(ticket.seatSelected).map(async (i) => {
-    //     const seatUpdated = await seat.findOne({
-    //       where: {
-    //         id: i,
-    //       },
-    //     });
-    //     seatUpdated.seatStatusId = 1;
-    //     await seatUpdated.save();
-    //   });
-    // }
+    if (ticket.seatSelected && JSON.parse(ticket.seatSelected).length) {
+      JSON.parse(ticket.seatSelected).map(async (i) => {
+        const seatUpdated = await seat.findOne({
+          where: {
+            key: "id",
+            value: i,
+          },
+        });
+        seatUpdated.seatStatusId = 1;
+        await seat.update(i, seatUpdated);
+      });
+    }
     await Ticket.destroy({
       where: {
         key: "id",

@@ -1,9 +1,13 @@
 const { DOMAIN } = require("../utils/constants");
-// const {
-//   seat,
-//   Ticket
-// } = require("./../models/index");
-const { Trip, busType, Station, passengerCarCompanies, vehicle } = require("../services/index.service");
+const {
+  Trip,
+  busType,
+  Station,
+  passengerCarCompanies,
+  vehicle,
+  Ticket,
+  seat
+} = require("../services/index.service");
 
 const create = async (req, res) => {
   const {
@@ -50,7 +54,7 @@ const getAll = async (req, res) => {
           as: "vehicleTrip",
           map: "tripId",
           include: [
-            { model: Station, as: "from", map: "fromStation"},
+            { model: Station, as: "from", map: "fromStation" },
             { model: Station, as: "to", map: "toStation" },
           ],
         },
@@ -78,7 +82,7 @@ const getDetail = async (req, res) => {
           as: "vehicleTrip",
           map: "tripId",
           include: [
-            { model: Station, as: "from", map: "fromStation"},
+            { model: Station, as: "from", map: "fromStation" },
             { model: Station, as: "to", map: "toStation" },
           ],
         },
@@ -136,20 +140,22 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   const { id } = req.params;
   try {
-    // await seat.destroy({
-    //   where: {
-    //     vehicledId: id,
-    //   },
-    // });
-    // await Ticket.destroy({
-    //   where: {
-    //     vehicledId: id,
-    //   },
-    // });
+    await seat.destroy({
+      where: {
+        key: "vehicledId",
+        value: id,
+      },
+    });
+    await Ticket.destroy({
+      where: {
+        key: "vehicledId",
+        value: id,
+      },
+    });
     await vehicle.destroy({
       where: {
         key: "id",
-        value: id
+        value: id,
       },
     });
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
@@ -172,7 +178,7 @@ const findByKeyword = async (req, res) => {
           as: "vehicleTrip",
           map: "tripId",
           include: [
-            { model: Station, as: "from", map: "fromStation"},
+            { model: Station, as: "from", map: "fromStation" },
             { model: Station, as: "to", map: "toStation" },
           ],
         },
@@ -180,7 +186,7 @@ const findByKeyword = async (req, res) => {
       ],
       where: {
         key: "name",
-        value: keyword
+        value: keyword,
       },
     });
     res.status(200).send(item);
@@ -221,7 +227,7 @@ const search = async (req, res) => {
             as: "vehicleTrip",
             map: "tripId",
             include: [
-              { model: Station, as: "from", map: "fromStation"},
+              { model: Station, as: "from", map: "fromStation" },
               { model: Station, as: "to", map: "toStation" },
             ],
           },
@@ -256,7 +262,7 @@ const search = async (req, res) => {
             as: "vehicleTrip",
             map: "tripId",
             include: [
-              { model: Station, as: "from", map: "fromStation"},
+              { model: Station, as: "from", map: "fromStation" },
               { model: Station, as: "to", map: "toStation" },
             ],
           },
