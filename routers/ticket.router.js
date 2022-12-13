@@ -2,8 +2,8 @@ const express = require("express");
 const { authenticate } = require("../middlewares/validate/authenticate");
 const { authorize } = require("../middlewares/validate/authorize");
 const { checkExits } = require("../middlewares/validate/checkExist");
+const { Ticket } = require("../services/index.service");
 const { USER_TYPE } = require("../utils/constants");
-const { Ticket, User } = require("./../models/index");
 const {
   create,
   getAll,

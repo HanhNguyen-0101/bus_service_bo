@@ -8,12 +8,12 @@ const {
     findByKeyword,
     search
 } = require("../controllers/vehicle.controller");
-const { vehicle } = require("./../models/index");
 const { checkExits } = require("../middlewares/validate/checkExist");
 const { authenticate } = require("../middlewares/validate/authenticate");
 const { authorize } = require("../middlewares/validate/authorize");
 const { USER_TYPE } = require("../utils/constants");
 const { uploadImage } = require("../middlewares/upload/uploadImage");
+const { vehicle } = require("../services/index.service");
 
 const vehicleRouter = express.Router();
 

@@ -1,14 +1,9 @@
-const { Op } = require("sequelize");
 const { DOMAIN } = require("../utils/constants");
-const {
-  vehicle,
-  passengerCarCompanies,
-  Trip,
-  busType,
-  Station,
-  seat,
-  Ticket
-} = require("./../models/index");
+// const {
+//   seat,
+//   Ticket
+// } = require("./../models/index");
+const { Trip, busType, Station, passengerCarCompanies, vehicle } = require("../services/index.service");
 
 const create = async (req, res) => {
   const {
@@ -45,16 +40,21 @@ const getAll = async (req, res) => {
   try {
     const vehicles = await vehicle.findAll({
       include: [
-        { model: passengerCarCompanies, as: "vehiclePassengerCarCompanies" },
+        {
+          model: passengerCarCompanies,
+          as: "vehiclePassengerCarCompanies",
+          map: "passengerCarCompaniesId",
+        },
         {
           model: Trip,
           as: "vehicleTrip",
+          map: "tripId",
           include: [
-            { model: Station, as: "from" },
-            { model: Station, as: "to" },
+            { model: Station, as: "from", map: "fromStation"},
+            { model: Station, as: "to", map: "toStation" },
           ],
         },
-        { model: busType, as: "vehicleBusType" },
+        { model: busType, as: "vehicleBusType", map: "busTypeId" },
       ],
     });
     res.status(200).send(vehicles);
@@ -68,12 +68,25 @@ const getDetail = async (req, res) => {
   try {
     const foundVehicle = await vehicle.findOne({
       include: [
-        { model: passengerCarCompanies, as: "vehiclePassengerCarCompanies" },
-        { model: Trip, as: "vehicleTrip" },
-        { model: busType, as: "vehicleBusType" },
+        {
+          model: passengerCarCompanies,
+          as: "vehiclePassengerCarCompanies",
+          map: "passengerCarCompaniesId",
+        },
+        {
+          model: Trip,
+          as: "vehicleTrip",
+          map: "tripId",
+          include: [
+            { model: Station, as: "from", map: "fromStation"},
+            { model: Station, as: "to", map: "toStation" },
+          ],
+        },
+        { model: busType, as: "vehicleBusType", map: "busTypeId" },
       ],
       where: {
-        id,
+        key: "id",
+        value: id,
       },
     });
     res.status(200).send(foundVehicle);
@@ -96,24 +109,24 @@ const update = async (req, res) => {
   } = req.body;
   const { file } = req;
   try {
-    const vehicleUpdated = await vehicle.findOne({
+    const vehicleItem = await vehicle.findOne({
       where: {
-        id,
+        key: "id",
+        value: id,
       },
     });
-    if (file) {
-      const image = `${DOMAIN}/${file.path}`;
-      vehicleUpdated.image = image;
-    }
-    vehicleUpdated.name = name;
-    vehicleUpdated.passengerCarCompaniesId = passengerCarCompaniesId;
-    vehicleUpdated.point = point;
-    vehicleUpdated.promo = promo;
-    vehicleUpdated.tripId = tripId;
-    vehicleUpdated.busTypeId = busTypeId;
-    vehicleUpdated.numberFloor = numberFloor;
-    vehicleUpdated.numberSeat = numberSeat;
-    await vehicleUpdated.save();
+    const vehicleUpdated = await vehicle.update(id, {
+      name: name || vehicleItem.name,
+      passengerCarCompaniesId:
+        passengerCarCompaniesId || vehicleItem.passengerCarCompaniesId,
+      point: point || vehicleItem.point,
+      promo: promo || vehicleItem.promo,
+      tripId: tripId || vehicleItem.tripId,
+      busTypeId: busTypeId || vehicleItem.busTypeId,
+      numberFloor: numberFloor || vehicleItem.numberFloor,
+      numberSeat: numberSeat || vehicleItem.numberSeat,
+      image: file ? `${DOMAIN}/${file.path}` : vehicle.image,
+    });
     res.status(200).send(vehicleUpdated);
   } catch (error) {
     res.status(500).send(error);
@@ -123,19 +136,20 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   const { id } = req.params;
   try {
-    await seat.destroy({
-      where: {
-        vehicledId: id,
-      },
-    });
-    await Ticket.destroy({
-      where: {
-        vehicledId: id,
-      },
-    });
+    // await seat.destroy({
+    //   where: {
+    //     vehicledId: id,
+    //   },
+    // });
+    // await Ticket.destroy({
+    //   where: {
+    //     vehicledId: id,
+    //   },
+    // });
     await vehicle.destroy({
       where: {
-        id,
+        key: "id",
+        value: id
       },
     });
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
@@ -148,21 +162,25 @@ const findByKeyword = async (req, res) => {
   try {
     const item = await vehicle.findAll({
       include: [
-        { model: passengerCarCompanies, as: "vehiclePassengerCarCompanies" },
+        {
+          model: passengerCarCompanies,
+          as: "vehiclePassengerCarCompanies",
+          map: "passengerCarCompaniesId",
+        },
         {
           model: Trip,
           as: "vehicleTrip",
+          map: "tripId",
           include: [
-            { model: Station, as: "from" },
-            { model: Station, as: "to" },
+            { model: Station, as: "from", map: "fromStation"},
+            { model: Station, as: "to", map: "toStation" },
           ],
         },
-        { model: busType, as: "vehicleBusType" },
+        { model: busType, as: "vehicleBusType", map: "busTypeId" },
       ],
       where: {
-        name: {
-          [Op.like]: `%${keyword}%`,
-        },
+        key: "name",
+        value: keyword
       },
     });
     res.status(200).send(item);
@@ -175,44 +193,74 @@ const search = async (req, res) => {
   try {
     if (date) {
       const item = await vehicle.findAll({
+        // include: [
+        //   {
+        //     model: Trip,
+        //     as: "vehicleTrip",
+        //     include: [
+        //       { model: Station, as: "from" },
+        //       { model: Station, as: "to" },
+        //     ],
+        //     where: {
+        //       fromStation: Number(from),
+        //       toStation: Number(to),
+        //       tripAt: {
+        //         [Op.like]: `%${date}%`,
+        //       },
+        //     },
+        //   },
+        // ],
         include: [
-          { model: passengerCarCompanies, as: "vehiclePassengerCarCompanies" },
+          {
+            model: passengerCarCompanies,
+            as: "vehiclePassengerCarCompanies",
+            map: "passengerCarCompaniesId",
+          },
           {
             model: Trip,
             as: "vehicleTrip",
+            map: "tripId",
             include: [
-              { model: Station, as: "from" },
-              { model: Station, as: "to" },
+              { model: Station, as: "from", map: "fromStation"},
+              { model: Station, as: "to", map: "toStation" },
             ],
-            where: {
-              fromStation: Number(from),
-              toStation: Number(to),
-              tripAt: {
-                [Op.like]: `%${date}%`,
-              },
-            },
           },
-          { model: busType, as: "vehicleBusType" },
+          { model: busType, as: "vehicleBusType", map: "busTypeId" },
         ],
       });
       res.status(200).send(item);
     } else {
       const item = await vehicle.findAll({
+        // include: [
+        //   {
+        //     model: Trip,
+        //     as: "vehicleTrip",
+        //     include: [
+        //       { model: Station, as: "from" },
+        //       { model: Station, as: "to" },
+        //     ],
+        //     where: {
+        //       fromStation: Number(from),
+        //       toStation: Number(to),
+        //     },
+        //   },
+        // ],
         include: [
-          { model: passengerCarCompanies, as: "vehiclePassengerCarCompanies" },
+          {
+            model: passengerCarCompanies,
+            as: "vehiclePassengerCarCompanies",
+            map: "passengerCarCompaniesId",
+          },
           {
             model: Trip,
             as: "vehicleTrip",
+            map: "tripId",
             include: [
-              { model: Station, as: "from" },
-              { model: Station, as: "to" },
+              { model: Station, as: "from", map: "fromStation"},
+              { model: Station, as: "to", map: "toStation" },
             ],
-            where: {
-              fromStation: Number(from),
-              toStation: Number(to)
-            },
           },
-          { model: busType, as: "vehicleBusType" },
+          { model: busType, as: "vehicleBusType", map: "busTypeId" },
         ],
       });
       res.status(200).send(item);
@@ -228,5 +276,5 @@ module.exports = {
   update,
   remove,
   findByKeyword,
-  search
+  search,
 };

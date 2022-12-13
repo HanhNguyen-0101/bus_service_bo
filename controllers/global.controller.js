@@ -10,7 +10,7 @@ const {
   hashTag,
   banner,
   article,
-} = require("../services/global.service");
+} = require("../services/index.service");
 const { DOMAIN } = require("../utils/constants");
 
 /******************Payment Method Table************************/
@@ -110,11 +110,12 @@ const getDetailBusType = async (req, res) => {
 const removeBusType = async (req, res) => {
   const { id } = req.params;
   try {
-    // await vehicle.destroy({
-    //   where: {
-    //     busTypeId: id,
-    //   },
-    // });
+    await vehicle.destroy({
+      where: {
+        key: "busTypeId",
+        value: id,
+      },
+    });
     await busType.destroy(id);
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
@@ -169,11 +170,12 @@ const getDetailUserType = async (req, res) => {
 const removeUserType = async (req, res) => {
   const { id } = req.params;
   try {
-    // await User.destroy({
-    //   where: {
-    //     typeId: id,
-    //   },
-    // });
+    await User.destroy({
+      where: {
+        key: "typeId",
+        value: id,
+      },
+    });
     await userType.destroy(id);
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {
@@ -563,11 +565,12 @@ const getDetailProvince = async (req, res) => {
 const removeProvince = async (req, res) => {
   const { id } = req.params;
   try {
-    // await Station.destroy({
-    //   where: {
-    //     provinceId: id,
-    //   },
-    // });
+    await Station.destroy({
+      where: {
+        key: "provinceId",
+        value: id,
+      },
+    });
     await Province.destroy(id);
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {

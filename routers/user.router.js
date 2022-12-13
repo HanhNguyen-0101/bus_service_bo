@@ -16,7 +16,7 @@ const { USER_TYPE } = require("../utils/constants");
 const { authorize } = require("../middlewares/validate/authorize");
 const { checkPasswordValid } = require("../middlewares/validate/checkValid");
 const { uploadImage } = require("../middlewares/upload/uploadImage");
-const { User } = require("../services/user.service");
+const { User } = require("../services/index.service");
 
 const userRouter = express.Router();
 

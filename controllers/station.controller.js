@@ -1,6 +1,4 @@
-const { Op } = require("sequelize");
-const { Province } = require("../services/global.service");
-const { Station } = require("../services/station.service");
+const { Province, Station } = require("../services/index.service");
 const { DOMAIN } = require("../utils/constants");
 
 const createStation = async (req, res) => {

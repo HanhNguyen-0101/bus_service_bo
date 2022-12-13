@@ -13,9 +13,7 @@ const { authenticate } = require("../middlewares/validate/authenticate");
 const { authorize } = require("../middlewares/validate/authorize");
 const { USER_TYPE } = require("../utils/constants");
 const { uploadImage } = require("../middlewares/upload/uploadImage");
-const {
-  passengerCarCompanies,
-} = require("../services/passengerCarCompanies.service");
+const { passengerCarCompanies } = require("../services/index.service");
 
 const passengerCarCompaniesRouter = express.Router();
 

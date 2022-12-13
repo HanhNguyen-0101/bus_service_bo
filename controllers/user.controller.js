@@ -1,10 +1,8 @@
-const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const gravatar = require("gravatar");
 const { SECRET, DOMAIN } = require("../utils/constants");
-const { User } = require("../services/user.service");
-const { userType } = require("../services/global.service");
+const { User, userType } = require("../services/index.service");
 
 const register = async (req, res) => {
   const { name, email, password, numberPhone } = req.body;

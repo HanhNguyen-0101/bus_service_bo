@@ -58,7 +58,7 @@ const {
     removeArticle,
     getArticleByHashtagSubTitle
 } = require("../controllers/global.controller");
-const { paymentMethod, busType, userType, statusSeat, Province, Point, PaymentStatus, OrderStatus, hashTag, banner, article } = require("../services/global.service");
+const { paymentMethod, busType, userType, statusSeat, Province, Point, PaymentStatus, OrderStatus, hashTag, banner, article } = require("../services/index.service");
 const { checkExits } = require("../middlewares/validate/checkExist");
 const { authenticate } = require("../middlewares/validate/authenticate");
 const { authorize } = require("../middlewares/validate/authorize");

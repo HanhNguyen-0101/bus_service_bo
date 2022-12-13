@@ -12,7 +12,7 @@ const { authenticate } = require("../middlewares/validate/authenticate");
 const { authorize } = require("../middlewares/validate/authorize");
 const { USER_TYPE } = require("../utils/constants");
 const { uploadImage } = require("../middlewares/upload/uploadImage");
-const { Station } = require("../services/station.service");
+const { Station } = require("../services/index.service");
 
 const stationRouter = express.Router();
 

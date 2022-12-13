@@ -1,13 +1,4 @@
-const { Op } = require("sequelize");
-const {
-  vehicle,
-  seat,
-  statusSeat,
-  passengerCarCompanies,
-  Trip,
-  Station,
-  busType,
-} = require("./../models/index");
+const { seat, busType, statusSeat, passengerCarCompanies, Station, Trip, vehicle } = require("../services/index.service");
 
 const create = async (req, res) => {
   const { name, vehicledId, seatStatusId } = req.body;
@@ -23,24 +14,27 @@ const getAll = async (req, res) => {
   try {
     const seats = await seat.findAll({
       include: [
-        { model: statusSeat, as: "seatStatus" },
+        { model: statusSeat, as: "seatStatus", map: "seatStatusId" },
         {
           model: vehicle,
           as: "seatVehicle",
+          map: "vehicledId",
           include: [
             {
               model: passengerCarCompanies,
               as: "vehiclePassengerCarCompanies",
+              map: "passengerCarCompaniesId",
             },
             {
               model: Trip,
               as: "vehicleTrip",
+              map: "tripId",
               include: [
-                { model: Station, as: "from" },
-                { model: Station, as: "to" },
+                { model: Station, as: "from", map: "fromStation" },
+                { model: Station, as: "to", map: "toStation" },
               ],
             },
-            { model: busType, as: "vehicleBusType" },
+            { model: busType, as: "vehicleBusType", map: "busTypeId" },
           ],
         },
       ],
@@ -56,29 +50,33 @@ const getDetail = async (req, res) => {
   try {
     const foundSeat = await seat.findOne({
       include: [
-        { model: statusSeat, as: "seatStatus" },
+        { model: statusSeat, as: "seatStatus", map: "seatStatusId" },
         {
           model: vehicle,
           as: "seatVehicle",
+          map: "vehicledId",
           include: [
             {
               model: passengerCarCompanies,
               as: "vehiclePassengerCarCompanies",
+              map: "passengerCarCompaniesId",
             },
             {
               model: Trip,
               as: "vehicleTrip",
+              map: "tripId",
               include: [
-                { model: Station, as: "from" },
-                { model: Station, as: "to" },
+                { model: Station, as: "from", map: "fromStation" },
+                { model: Station, as: "to", map: "toStation" },
               ],
             },
-            { model: busType, as: "vehicleBusType" },
+            { model: busType, as: "vehicleBusType", map: "busTypeId" },
           ],
         },
       ],
       where: {
-        id,
+        key: "id",
+        value: id,
       },
     });
     res.status(200).send(foundSeat);
@@ -93,25 +91,27 @@ const update = async (req, res) => {
   try {
     const seatUpdated = await seat.findOne({
       where: {
-        id,
+        key: "id",
+        value: id,
       },
     });
-    seatUpdated.name = name;
-    seatUpdated.vehicledId = vehicledId;
-    seatUpdated.seatStatusId = seatStatusId;
-    await seatUpdated.save();
-    res.status(200).send(seatUpdated);
+    const seatItem = await seat.update(id, {
+      name: name || seatUpdated.name,
+      vehicledId: vehicledId || seatUpdated.vehicledId,
+      seatStatusId: seatStatusId || seatUpdated.seatStatusId,
+    });
+    res.status(200).send(seatItem);
   } catch (error) {
     res.status(500).send(error);
   }
 };
-
 const remove = async (req, res) => {
   const { id } = req.params;
   try {
     await seat.destroy({
       where: {
-        id,
+        key: "id",
+        value: id,
       },
     });
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
@@ -124,31 +124,33 @@ const findByKeyword = async (req, res) => {
   try {
     const item = await seat.findAll({
       include: [
-        { model: statusSeat, as: "seatStatus" },
+        { model: statusSeat, as: "seatStatus", map: "seatStatusId" },
         {
           model: vehicle,
           as: "seatVehicle",
+          map: "vehicledId",
           include: [
             {
               model: passengerCarCompanies,
               as: "vehiclePassengerCarCompanies",
+              map: "passengerCarCompaniesId",
             },
             {
               model: Trip,
               as: "vehicleTrip",
+              map: "tripId",
               include: [
-                { model: Station, as: "from" },
-                { model: Station, as: "to" },
+                { model: Station, as: "from", map: "fromStation" },
+                { model: Station, as: "to", map: "toStation" },
               ],
             },
-            { model: busType, as: "vehicleBusType" },
+            { model: busType, as: "vehicleBusType", map: "busTypeId" },
           ],
         },
       ],
       where: {
-        name: {
-          [Op.like]: `%${keyword}%`,
-        },
+        key: "name",
+        value: keyword,
       },
     });
     res.status(200).send(item);

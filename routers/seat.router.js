@@ -7,11 +7,11 @@ const {
     remove,
     findByKeyword
 } = require("../controllers/seat.controller");
-const { seat } = require("./../models/index");
 const { checkExits } = require("../middlewares/validate/checkExist");
 const { authenticate } = require("../middlewares/validate/authenticate");
 const { authorize } = require("../middlewares/validate/authorize");
 const { USER_TYPE } = require("../utils/constants");
+const { seat } = require("../services/index.service");
 
 const seatRouter = express.Router();
 

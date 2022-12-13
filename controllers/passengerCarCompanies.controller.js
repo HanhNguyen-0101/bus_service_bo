@@ -1,6 +1,4 @@
-const {
-  passengerCarCompanies,
-} = require("../services/passengerCarCompanies.service");
+const { passengerCarCompanies } = require("../services/index.service");
 const { DOMAIN } = require("../utils/constants");
 
 const create = async (req, res) => {
@@ -76,11 +74,12 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   const { id } = req.params;
   try {
-    // await vehicle.destroy({
-    //   where: {
-    //     passengerCarCompaniesId: id,
-    //   },
-    // });
+    await vehicle.destroy({
+      where: {
+        key: "passengerCarCompaniesId",
+        value: id,
+      },
+    });
     await passengerCarCompanies.destroy({
       where: {
         key: "id",

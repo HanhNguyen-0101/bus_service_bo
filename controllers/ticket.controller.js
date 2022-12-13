@@ -1,16 +1,11 @@
-const { Op } = require("sequelize");
 const {
-  Ticket,
-  seat,
-  Trip,
   paymentMethod,
   OrderStatus,
   PaymentStatus,
-  passengerCarCompanies,
   busType,
-  vehicle,
-  Station,
-} = require("./../models/index");
+  passengerCarCompanies,
+  Station, Ticket, Trip, vehicle
+} = require("../services/index.service");
 
 const create = async (req, res) => {
   const {
@@ -40,17 +35,17 @@ const create = async (req, res) => {
       note,
       paymentStatusId,
     });
-    if (seatSelected && JSON.parse(seatSelected).length) {
-      JSON.parse(seatSelected).map(async (i) => {
-        const seatUpdated = await seat.findOne({
-          where: {
-            id: i,
-          },
-        });
-        seatUpdated.seatStatusId = 2;
-        await seatUpdated.save();
-      });
-    }
+    // if (seatSelected && JSON.parse(seatSelected).length) {
+    //   JSON.parse(seatSelected).map(async (i) => {
+    //     const seatUpdated = await seat.findOne({
+    //       where: {
+    //         id: i,
+    //       },
+    //     });
+    //     seatUpdated.seatStatusId = 2;
+    //     await seatUpdated.save();
+    //   });
+    // }
     res.status(201).send(ticket);
   } catch (error) {
     res.status(500).send(error);
@@ -61,26 +56,37 @@ const getAll = async (req, res) => {
   try {
     const tickets = await Ticket.findAll({
       include: [
-        { model: paymentMethod, as: "paymentMethodTicket" },
-        { model: OrderStatus, as: "orderStatusTicket" },
-        { model: PaymentStatus, as: "paymentStatusTicket" },
+        {
+          model: paymentMethod,
+          as: "paymentMethodTicket",
+          map: "paymentMethodId",
+        },
+        { model: OrderStatus, as: "orderStatusTicket", map: "orderStatusId" },
+        {
+          model: PaymentStatus,
+          as: "paymentStatusTicket",
+          map: "paymentStatusId",
+        },
         {
           model: vehicle,
           as: "vehicledTicket",
+          map: "vehicledId",
           include: [
             {
               model: passengerCarCompanies,
               as: "vehiclePassengerCarCompanies",
+              map: "passengerCarCompaniesId",
             },
             {
               model: Trip,
               as: "vehicleTrip",
+              map: "tripId",
               include: [
-                { model: Station, as: "from" },
-                { model: Station, as: "to" },
+                { model: Station, as: "from", map: "fromStation" },
+                { model: Station, as: "to", map: "toStation" },
               ],
             },
-            { model: busType, as: "vehicleBusType" },
+            { model: busType, as: "vehicleBusType", map: "busTypeId" },
           ],
         },
       ],
@@ -96,31 +102,43 @@ const getDetail = async (req, res) => {
   try {
     const ticket = await Ticket.findOne({
       include: [
-        { model: paymentMethod, as: "paymentMethodTicket" },
-        { model: OrderStatus, as: "orderStatusTicket" },
-        { model: PaymentStatus, as: "paymentStatusTicket" },
+        {
+          model: paymentMethod,
+          as: "paymentMethodTicket",
+          map: "paymentMethodId",
+        },
+        { model: OrderStatus, as: "orderStatusTicket", map: "orderStatusId" },
+        {
+          model: PaymentStatus,
+          as: "paymentStatusTicket",
+          map: "paymentStatusId",
+        },
         {
           model: vehicle,
           as: "vehicledTicket",
+          map: "vehicledId",
           include: [
             {
               model: passengerCarCompanies,
               as: "vehiclePassengerCarCompanies",
+              map: "passengerCarCompaniesId",
             },
             {
               model: Trip,
               as: "vehicleTrip",
+              map: "tripId",
               include: [
-                { model: Station, as: "from" },
-                { model: Station, as: "to" },
+                { model: Station, as: "from", map: "fromStation" },
+                { model: Station, as: "to", map: "toStation" },
               ],
             },
-            { model: busType, as: "vehicleBusType" },
+            { model: busType, as: "vehicleBusType", map: "busTypeId" },
           ],
         },
       ],
       where: {
-        id,
+        key: "id",
+        value: id
       },
     });
     res.status(200).send(ticket);
@@ -147,7 +165,8 @@ const edit = async (req, res) => {
   try {
     const ticket = await Ticket.findOne({
       where: {
-        id,
+        key: "id",
+        value: id
       },
     });
     ticket.name = name;
@@ -155,36 +174,36 @@ const edit = async (req, res) => {
     ticket.identify = identify;
     ticket.numberPhone = numberPhone;
     ticket.vehicledId = vehicledId;
-    if (ticket.seatSelected && JSON.parse(ticket.seatSelected).length) {
-      JSON.parse(ticket.seatSelected).map(async (i) => {
-        const seatUpdated = await seat.findOne({
-          where: {
-            id: i,
-          },
-        });
-        seatUpdated.seatStatusId = 1;
-        await seatUpdated.save();
-      });
-    }
-    if (seatSelected && JSON.parse(seatSelected).length) {
-      JSON.parse(seatSelected).map(async (i) => {
-        const seatUpdated = await seat.findOne({
-          where: {
-            id: i,
-          },
-        });
-        seatUpdated.seatStatusId = 2;
-        await seatUpdated.save();
-      });
-    }
+    // if (ticket.seatSelected && JSON.parse(ticket.seatSelected).length) {
+    //   JSON.parse(ticket.seatSelected).map(async (i) => {
+    //     const seatUpdated = await seat.findOne({
+    //       where: {
+    //         id: i,
+    //       },
+    //     });
+    //     seatUpdated.seatStatusId = 1;
+    //     await seatUpdated.save();
+    //   });
+    // }
+    // if (seatSelected && JSON.parse(seatSelected).length) {
+    //   JSON.parse(seatSelected).map(async (i) => {
+    //     const seatUpdated = await seat.findOne({
+    //       where: {
+    //         id: i,
+    //       },
+    //     });
+    //     seatUpdated.seatStatusId = 2;
+    //     await seatUpdated.save();
+    //   });
+    // }
     ticket.seatSelected = seatSelected;
     ticket.orderStatusId = orderStatusId;
     ticket.paymentMethodId = paymentMethodId;
     ticket.paymentStatusId = paymentStatusId;
     ticket.note = note;
     ticket.point = point;
-    await ticket.save();
-    res.status(200).send(ticket);
+    const ticketUpdated = await Ticket.update(id, ticket);
+    res.status(200).send(ticketUpdated);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -195,23 +214,25 @@ const remove = async (req, res) => {
   try {
     const ticket = await Ticket.findOne({
       where: {
-        id,
+        key: "id",
+        value: id
       },
     });
-    if (ticket.seatSelected && JSON.parse(ticket.seatSelected).length) {
-      JSON.parse(ticket.seatSelected).map(async (i) => {
-        const seatUpdated = await seat.findOne({
-          where: {
-            id: i,
-          },
-        });
-        seatUpdated.seatStatusId = 1;
-        await seatUpdated.save();
-      });
-    }
+    // if (ticket.seatSelected && JSON.parse(ticket.seatSelected).length) {
+    //   JSON.parse(ticket.seatSelected).map(async (i) => {
+    //     const seatUpdated = await seat.findOne({
+    //       where: {
+    //         id: i,
+    //       },
+    //     });
+    //     seatUpdated.seatStatusId = 1;
+    //     await seatUpdated.save();
+    //   });
+    // }
     await Ticket.destroy({
       where: {
-        id,
+        key: "id",
+        value: id
       },
     });
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
@@ -225,31 +246,43 @@ const getTicketByEmail = async (req, res) => {
   try {
     const results = await Ticket.findAll({
       include: [
-        { model: paymentMethod, as: "paymentMethodTicket" },
-        { model: OrderStatus, as: "orderStatusTicket" },
-        { model: PaymentStatus, as: "paymentStatusTicket" },
+        {
+          model: paymentMethod,
+          as: "paymentMethodTicket",
+          map: "paymentMethodId",
+        },
+        { model: OrderStatus, as: "orderStatusTicket", map: "orderStatusId" },
+        {
+          model: PaymentStatus,
+          as: "paymentStatusTicket",
+          map: "paymentStatusId",
+        },
         {
           model: vehicle,
           as: "vehicledTicket",
+          map: "vehicledId",
           include: [
             {
               model: passengerCarCompanies,
               as: "vehiclePassengerCarCompanies",
+              map: "passengerCarCompaniesId",
             },
             {
               model: Trip,
               as: "vehicleTrip",
+              map: "tripId",
               include: [
-                { model: Station, as: "from" },
-                { model: Station, as: "to" },
+                { model: Station, as: "from", map: "fromStation" },
+                { model: Station, as: "to", map: "toStation" },
               ],
             },
-            { model: busType, as: "vehicleBusType" },
+            { model: busType, as: "vehicleBusType", map: "busTypeId" },
           ],
         },
       ],
       where: {
-        email,
+        key: "email",
+        value: email
       },
     });
     res.status(200).send(results);
@@ -263,48 +296,59 @@ const findByKeyword = async (req, res) => {
   try {
     const item = await Ticket.findAll({
       include: [
-        { model: paymentMethod, as: "paymentMethodTicket" },
-        { model: OrderStatus, as: "orderStatusTicket" },
-        { model: PaymentStatus, as: "paymentStatusTicket" },
+        {
+          model: paymentMethod,
+          as: "paymentMethodTicket",
+          map: "paymentMethodId",
+        },
+        { model: OrderStatus, as: "orderStatusTicket", map: "orderStatusId" },
+        {
+          model: PaymentStatus,
+          as: "paymentStatusTicket",
+          map: "paymentStatusId",
+        },
         {
           model: vehicle,
           as: "vehicledTicket",
+          map: "vehicledId",
           include: [
             {
               model: passengerCarCompanies,
               as: "vehiclePassengerCarCompanies",
+              map: "passengerCarCompaniesId",
             },
             {
               model: Trip,
               as: "vehicleTrip",
+              map: "tripId",
               include: [
-                { model: Station, as: "from" },
-                { model: Station, as: "to" },
+                { model: Station, as: "from", map: "fromStation" },
+                { model: Station, as: "to", map: "toStation" },
               ],
             },
-            { model: busType, as: "vehicleBusType" },
+            { model: busType, as: "vehicleBusType", map: "busTypeId" },
           ],
         },
       ],
-      where: {
-        [Op.or]: [
-          {
-            name: {
-              [Op.like]: `%${keyword}%`,
-            },
-          },
-          {
-            email: {
-              [Op.like]: `%${keyword}%`,
-            },
-          },
-          {
-            numberPhone: {
-              [Op.like]: `%${keyword}%`,
-            },
-          },
-        ],
-      },
+      // where: {
+      //   [Op.or]: [
+      //     {
+      //       name: {
+      //         [Op.like]: `%${keyword}%`,
+      //       },
+      //     },
+      //     {
+      //       email: {
+      //         [Op.like]: `%${keyword}%`,
+      //       },
+      //     },
+      //     {
+      //       numberPhone: {
+      //         [Op.like]: `%${keyword}%`,
+      //       },
+      //     },
+      //   ],
+      // },
     });
     res.status(200).send(item);
   } catch (error) {

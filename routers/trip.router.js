@@ -3,7 +3,6 @@ const { authenticate } = require('../middlewares/validate/authenticate');
 const { authorize } = require('../middlewares/validate/authorize');
 const { checkExits } = require('../middlewares/validate/checkExist');
 const { USER_TYPE } = require('../utils/constants');
-const { Trip } = require("./../models/index");
 const {
     create,
     getAll,
@@ -13,6 +12,7 @@ const {
     findTripByKeyword
 } = require('./../controllers/trip.controller');
 const { uploadImage } = require('../middlewares/upload/uploadImage');
+const { Trip } = require("../services/index.service");
 
 const tripRouter = express.Router();
 
