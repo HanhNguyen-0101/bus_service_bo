@@ -1,4 +1,4 @@
-const { Province, Station } = require("../services/index.service");
+const { Province, Station, Trip } = require("../services/index.service");
 const { DOMAIN } = require("../utils/constants");
 
 const createStation = async (req, res) => {
@@ -82,11 +82,14 @@ const updateStation = async (req, res) => {
 const deleteStation = async (req, res) => {
   const { id } = req.params;
   try {
-    // await Trip.destroy({
-    //   where: {
-    //     [Op.or]: [{ fromStation: id }, { toStation: id }],
-    //   },
-    // });
+    await Trip.destroy({
+      where: {
+        or: [
+          { key: "fromStation", value: id },
+          { key: "toStation", value: id },
+        ],
+      },
+    });
     await Station.destroy({ where: { key: "id", value: id } });
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
   } catch (error) {

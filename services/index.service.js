@@ -57,13 +57,7 @@ const findOne = async (url, obj) => {
   const { where, include } = obj;
   const { key, value } = where;
 
-  const index = lodash.findIndex(data, (i) => {
-    if (key === "id") {
-      return i[key] === Number(value);
-    } else {
-      return i[key] === value;
-    }
-  });
+  const index = lodash.findIndex(data, (i) => i[key] == value);
   if (index !== -1) {
     if (include) {
       let item;
@@ -95,18 +89,32 @@ const findOne = async (url, obj) => {
 const destroy = async (url, obj) => {
   const data = await getData(url);
   const { where } = obj;
-  const { key, value } = where;
-
-  const index = await lodash.findIndex(data, (i) => i[key] === Number(value));
-  if (index !== -1) {
-    data.splice(index, 1);
-    await updateData(url, data);
-    return;
+  const { key, value, or } = where;
+  if (or) {
+    let flat = false;
+    for (let i = 0; i < or.length; i++) {
+      const orItem = or[i];
+      const index = await lodash.findIndex(
+        data,
+        (j) => j[orItem.key] == orItem.value
+      );
+      if (index !== -1) {
+        flat = true;
+        data.splice(index, 1);
+      }
+    }
   } else {
-    return {
-      message: "Find by ID",
-      content: "Not found by ID",
-    };
+    const index = await lodash.findIndex(data, (i) => i[key] == value);
+    if (index !== -1) {
+      data.splice(index, 1);
+      await updateData(url, data);
+      return;
+    } else {
+      return {
+        message: "Find by ID",
+        content: "Not found by ID",
+      };
+    }
   }
 };
 const create = async (url, item) => {
@@ -123,7 +131,7 @@ const create = async (url, item) => {
 };
 const update = async (url, id, item) => {
   const data = await getData(url);
-  const index = lodash.findIndex(data, (i) => i.id === Number(id));
+  const index = lodash.findIndex(data, (i) => i.id == id);
   if (index !== -1) {
     const updated = data[index];
     data[index] = {
@@ -220,11 +228,16 @@ module.exports = {
     update: (id, item) => update("global/article", id, item),
   },
   passengerCarCompanies: {
-    findAll: (obj) => findAll("passengerCarCompanies/passengerCarCompanies", obj),
-    findOne: (obj) => findOne("passengerCarCompanies/passengerCarCompanies", obj),
-    destroy: (obj) => destroy("passengerCarCompanies/passengerCarCompanies", obj),
-    create: (item) => create("passengerCarCompanies/passengerCarCompanies", item),
-    update: (id, item) => update("passengerCarCompanies/passengerCarCompanies", id, item),
+    findAll: (obj) =>
+      findAll("passengerCarCompanies/passengerCarCompanies", obj),
+    findOne: (obj) =>
+      findOne("passengerCarCompanies/passengerCarCompanies", obj),
+    destroy: (obj) =>
+      destroy("passengerCarCompanies/passengerCarCompanies", obj),
+    create: (item) =>
+      create("passengerCarCompanies/passengerCarCompanies", item),
+    update: (id, item) =>
+      update("passengerCarCompanies/passengerCarCompanies", id, item),
   },
   Station: {
     findAll: (obj) => findAll("stations/stations", obj),
