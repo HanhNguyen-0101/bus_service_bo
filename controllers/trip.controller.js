@@ -44,7 +44,7 @@ const getDetail = async (req, res) => {
       ],
       where: {
         key: "id",
-        value: id
+        value: id,
       },
     });
     res.status(200).send(trip);
@@ -61,7 +61,7 @@ const edit = async (req, res) => {
     const tripItem = await Trip.findOne({
       where: {
         key: "id",
-        value: id
+        value: id,
       },
     });
     const trip = await Trip.update(id, {
@@ -71,7 +71,7 @@ const edit = async (req, res) => {
       startTime: startTime || tripItem.startTime,
       price: price || tripItem.price,
       image: file ? `${DOMAIN}/${file.path}` : tripItem.image,
-    })
+    });
     res.status(200).send(trip);
   } catch (error) {
     res.status(500).send(error);
@@ -90,7 +90,7 @@ const remove = async (req, res) => {
     await Trip.destroy({
       where: {
         key: "id",
-        value: id
+        value: id,
       },
     });
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
@@ -102,16 +102,24 @@ const findTripByKeyword = async (req, res) => {
   const { keyword } = req.params;
   try {
     const results = await Trip.findAll({
-      // where: {
-      //   [Op.or]: [
-      //     {
-      //       "$from.name$": { [Op.like]: `%${keyword}%` },
-      //     },
-      //     {
-      //       "$to.name$": { [Op.like]: `%${keyword}%` },
-      //     },
-      //   ],
-      // },
+      where: {
+        or: [
+          {
+            where: {
+              key: "from.name",
+              value: keyword,
+              like: true,
+            },
+          },
+          {
+            where: {
+              key: "to.name",
+              value: keyword,
+              like: true,
+            },
+          }
+        ],
+      },
       include: [
         { model: Station, as: "from", map: "fromStation" },
         { model: Station, as: "to", map: "toStation" },

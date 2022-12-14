@@ -15,36 +15,114 @@ const updateData = async (url, data) => {
     if (err) throw err;
   });
 };
+function count_element_in_array(array, x) {
+  let count = 0;
+  for (let i = 0; i < array.length; i++) {
+    if (array[i].id == x.id) count++;
+  }
+  return count;
+}
 
 // *******************Method**********************
 const findAll = async (url, obj) => {
   const data = await getData(url);
+  let dataFirst = [...data];
   if (obj) {
     const { where, include } = obj;
-    let result = [...data];
-    if (where) {
-      const { key, value } = where;
-      result = lodash.filter(data, (i) => i[key].includes(value));
-    }
     if (include) {
       let resultIn = [];
-      for (let i = 0; i < result.length; i++) {
+      for (let i = 0; i < dataFirst.length; i++) {
         for (let index = 0; index < include.length; index++) {
           const { model, as, map } = include[index];
           const objItem = {
             where: {
               key: "id",
-              value: result[i][map],
+              value: dataFirst[i][map],
             },
           };
           if (include[index].include) {
             objItem.include = include[index].include;
           }
-          result[i][as] = await model.findOne(objItem);
+          dataFirst[i][as] = await model.findOne(objItem);
         }
-        resultIn.push(result[i]);
+        resultIn.push(dataFirst[i]);
       }
-      result = [...resultIn];
+      dataFirst = [...resultIn];
+    }
+    let result = [...dataFirst];
+    if (where) {
+      const { key, value, like, or, and } = where;
+      let dataSecond;
+      if (or || and) {
+        if (or) {
+          dataSecond = [];
+          for (let ixd = 0; ixd < or.length; ixd++) {
+            if (include) {
+              or[ixd].include = include;
+            }
+            if (and) {
+              or[ixd].where.and = and;
+            }
+            const asc = await findAll(url, or[ixd]);
+            lodash.map(asc, (v) => {
+              const pos = dataSecond.findIndex((b) => b.id === v.id);
+              if (pos === -1) {
+                dataSecond.push(v);
+              }
+              return v;
+            });
+          }
+          result = [...dataSecond];
+        }
+        if (and) {
+          dataSecond = [];
+          for (let ixd = 0; ixd < and.length; ixd++) {
+            if (include) {
+              and[ixd].include = include;
+            }
+            if (or) {
+              and[ixd].where.or = or;
+            }
+            const asc = await findAll(url, and[ixd]);
+            dataSecond.push(...asc);
+          }
+
+          let resultF = [];
+          lodash.map(dataSecond, (f) => {
+            if (count_element_in_array(dataSecond, f) >= and.length) {
+              const pos = resultF.findIndex((b) => b.id === f.id);
+              if (pos === -1) {
+                resultF.push(f);
+              }
+            }
+            return f;
+          });
+          result = [...resultF];
+        }
+      } else {
+        result = lodash.filter(dataFirst, (i) => {
+          // Convert key object
+          let ckey = i;
+          if (key.includes(".")) {
+            let keyF = key.split(".");
+            for (let i = 0; i < keyF.length; i++) {
+              ckey = ckey[keyF[i]];
+            }
+          } else {
+            ckey = i[key];
+          }
+
+          // Check compare equal or like
+          if (like) {
+            return ckey
+              .toString()
+              .toLowerCase()
+              .includes(value.toString().toLowerCase());
+          } else {
+            return ckey == value;
+          }
+        });
+      }
     }
     return result;
   } else {
@@ -87,33 +165,19 @@ const findOne = async (url, obj) => {
 };
 
 const destroy = async (url, obj) => {
-  const data = await getData(url);
   const { where } = obj;
-  const { key, value, or } = where;
-  if (or) {
-    let flat = false;
-    for (let i = 0; i < or.length; i++) {
-      const orItem = or[i];
-      const index = await lodash.findIndex(
-        data,
-        (j) => j[orItem.key] == orItem.value
-      );
-      if (index !== -1) {
-        flat = true;
-        data.splice(index, 1);
+  if (where) {
+    const { key, value, or } = where;
+    if (or) {
+      for (let ixd = 0; ixd < or.length; ixd++) {
+        await destroy(url, or[ixd]);
       }
-    }
-  } else {
-    const index = await lodash.findIndex(data, (i) => i[key] == value);
-    if (index !== -1) {
-      data.splice(index, 1);
-      await updateData(url, data);
       return;
     } else {
-      return {
-        message: "Find by ID",
-        content: "Not found by ID",
-      };
+      const data = await getData(url);
+      const result = lodash.filter(data, (i) => i[key] != value);
+      await updateData(url, result);
+      return;
     }
   }
 };

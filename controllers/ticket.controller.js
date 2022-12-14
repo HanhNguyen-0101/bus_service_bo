@@ -4,7 +4,11 @@ const {
   PaymentStatus,
   busType,
   passengerCarCompanies,
-  Station, Ticket, Trip, vehicle, seat
+  Station,
+  Ticket,
+  Trip,
+  vehicle,
+  seat,
 } = require("../services/index.service");
 
 const create = async (req, res) => {
@@ -139,7 +143,7 @@ const getDetail = async (req, res) => {
       ],
       where: {
         key: "id",
-        value: id
+        value: id,
       },
     });
     res.status(200).send(ticket);
@@ -167,7 +171,7 @@ const edit = async (req, res) => {
     const ticket = await Ticket.findOne({
       where: {
         key: "id",
-        value: id
+        value: id,
       },
     });
     ticket.name = name;
@@ -218,7 +222,7 @@ const remove = async (req, res) => {
     const ticket = await Ticket.findOne({
       where: {
         key: "id",
-        value: id
+        value: id,
       },
     });
     if (ticket.seatSelected && JSON.parse(ticket.seatSelected).length) {
@@ -236,7 +240,7 @@ const remove = async (req, res) => {
     await Ticket.destroy({
       where: {
         key: "id",
-        value: id
+        value: id,
       },
     });
     res.status(200).send({ message: `Delete ID: ${id} is successfully` });
@@ -286,7 +290,7 @@ const getTicketByEmail = async (req, res) => {
       ],
       where: {
         key: "email",
-        value: email
+        value: email,
       },
     });
     res.status(200).send(results);
@@ -334,25 +338,13 @@ const findByKeyword = async (req, res) => {
           ],
         },
       ],
-      // where: {
-      //   [Op.or]: [
-      //     {
-      //       name: {
-      //         [Op.like]: `%${keyword}%`,
-      //       },
-      //     },
-      //     {
-      //       email: {
-      //         [Op.like]: `%${keyword}%`,
-      //       },
-      //     },
-      //     {
-      //       numberPhone: {
-      //         [Op.like]: `%${keyword}%`,
-      //       },
-      //     },
-      //   ],
-      // },
+      where: {
+        or: [
+          { where: { key: "name", value: keyword, like: true } },
+          { where: { key: "email", value: keyword, like: true } },
+          { where: { key: "numberPhone", value: keyword, like: true } },
+        ],
+      },
     });
     res.status(200).send(item);
   } catch (error) {

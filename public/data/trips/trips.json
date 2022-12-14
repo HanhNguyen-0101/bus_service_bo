@@ -86,38 +86,5 @@
     "updatedAt": "2022-08-17T02:21:41.000Z",
     "fromStation": 1,
     "toStation": 7
-  },
-  {
-    "id": 9,
-    "startTime": 90,
-    "price": 450000,
-    "image": "https://storage.googleapis.com/fe-production/images/bx-mien-dong.jpg",
-    "tripAt": "2022-08-17T02:03:16.000Z",
-    "createdAt": "2022-08-17T02:03:16.000Z",
-    "updatedAt": "2022-08-17T02:21:41.000Z",
-    "fromStation": 1,
-    "toStation": 8
-  },
-  {
-    "id": 10,
-    "startTime": 90,
-    "price": 450000,
-    "image": "https://storage.googleapis.com/fe-production/images/bx-mien-dong.jpg",
-    "tripAt": "2022-08-17T02:03:16.000Z",
-    "createdAt": "2022-08-17T02:03:16.000Z",
-    "updatedAt": "2022-08-17T02:21:41.000Z",
-    "fromStation": 8,
-    "toStation": 7
-  },
-  {
-    "id": 11,
-    "startTime": 90,
-    "price": 450000,
-    "image": "https://storage.googleapis.com/fe-production/images/bx-mien-dong.jpg",
-    "tripAt": "2022-08-17T02:03:16.000Z",
-    "createdAt": "2022-08-17T02:03:16.000Z",
-    "updatedAt": "2022-08-17T02:21:41.000Z",
-    "fromStation": 8,
-    "toStation": 8
   }
 ]

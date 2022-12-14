@@ -85,8 +85,8 @@ const deleteStation = async (req, res) => {
     await Trip.destroy({
       where: {
         or: [
-          { key: "fromStation", value: id },
-          { key: "toStation", value: id },
+          { where: { key: "fromStation", value: id } },
+          { where: { key: "toStation", value: id } },
         ],
       },
     });
