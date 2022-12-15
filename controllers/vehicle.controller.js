@@ -6,7 +6,7 @@ const {
   passengerCarCompanies,
   vehicle,
   Ticket,
-  seat
+  seat,
 } = require("../services/index.service");
 
 const create = async (req, res) => {
@@ -199,23 +199,6 @@ const search = async (req, res) => {
   try {
     if (date) {
       const item = await vehicle.findAll({
-        // include: [
-        //   {
-        //     model: Trip,
-        //     as: "vehicleTrip",
-        //     include: [
-        //       { model: Station, as: "from" },
-        //       { model: Station, as: "to" },
-        //     ],
-        //     where: {
-        //       fromStation: Number(from),
-        //       toStation: Number(to),
-        //       tripAt: {
-        //         [Op.like]: `%${date}%`,
-        //       },
-        //     },
-        //   },
-        // ],
         include: [
           {
             model: passengerCarCompanies,
@@ -233,24 +216,17 @@ const search = async (req, res) => {
           },
           { model: busType, as: "vehicleBusType", map: "busTypeId" },
         ],
+        where: {
+          and: [
+            { where: { key: "vehicleTrip.fromStation", value: Number(from) } },
+            { where: { key: "vehicleTrip.toStation", value: Number(to) } },
+            { where: { key: "vehicleTrip.tripAt", value: date, like: true } },
+          ],
+        },
       });
       res.status(200).send(item);
     } else {
       const item = await vehicle.findAll({
-        // include: [
-        //   {
-        //     model: Trip,
-        //     as: "vehicleTrip",
-        //     include: [
-        //       { model: Station, as: "from" },
-        //       { model: Station, as: "to" },
-        //     ],
-        //     where: {
-        //       fromStation: Number(from),
-        //       toStation: Number(to),
-        //     },
-        //   },
-        // ],
         include: [
           {
             model: passengerCarCompanies,
@@ -268,6 +244,12 @@ const search = async (req, res) => {
           },
           { model: busType, as: "vehicleBusType", map: "busTypeId" },
         ],
+        where: {
+          and: [
+            { where: { key: "vehicleTrip.fromStation", value: Number(from) } },
+            { where: { key: "vehicleTrip.toStation", value: Number(to) } },
+          ],
+        },
       });
       res.status(200).send(item);
     }

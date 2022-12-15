@@ -43,6 +43,9 @@ const findAll = async (url, obj) => {
           if (include[index].include) {
             objItem.include = include[index].include;
           }
+          if (include[index].where) {
+            objItem.where = include[index].where;
+          }
           dataFirst[i][as] = await model.findOne(objItem);
         }
         resultIn.push(dataFirst[i]);
@@ -133,10 +136,59 @@ const findAll = async (url, obj) => {
 const findOne = async (url, obj) => {
   const data = await getData(url);
   const { where, include } = obj;
-  const { key, value } = where;
+  const { key, value, like, or, and } = where;
 
-  const index = lodash.findIndex(data, (i) => i[key] == value);
-  if (index !== -1) {
+  let itemFound, dataSecond;
+  if (or || and) {
+    if (or) {
+      dataSecond = [];
+      for (let ixd = 0; ixd < or.length; ixd++) {
+        if (and) {
+          or[ixd].where.and = and;
+        }
+        const asc = await findAll(url, or[ixd]);
+        lodash.map(asc, (v) => {
+          const pos = dataSecond.findIndex((b) => b.id === v.id);
+          if (pos === -1) {
+            dataSecond.push(v);
+          }
+          return v;
+        });
+      }
+      itemFound = lodash.first(dataSecond);
+    }
+    if (and) {
+      dataSecond = [];
+      for (let ixd = 0; ixd < and.length; ixd++) {
+        if (or) {
+          and[ixd].where.or = or;
+        }
+        const asc = await findAll(url, and[ixd]);
+        dataSecond.push(...asc);
+      }
+      let resultF = [];
+      lodash.map(dataSecond, (f) => {
+        if (count_element_in_array(dataSecond, f) >= and.length) {
+          const pos = resultF.findIndex((b) => b.id === f.id);
+          if (pos === -1) {
+            resultF.push(f);
+          }
+        }
+        return f;
+      });
+
+      itemFound = resultF.length ? lodash.first(resultF) : null;
+    }
+  } else {
+    if (like) {
+      itemFound = lodash.find(data, (i) =>
+        i[key].toString.toLowerCase().includes(value.toString().toLowerCase())
+      );
+    } else {
+      itemFound = lodash.find(data, (i) => i[key] == value);
+    }
+  }
+  if (itemFound) {
     if (include) {
       let item;
       for (let i = 0; i < include.length; i++) {
@@ -144,18 +196,18 @@ const findOne = async (url, obj) => {
         const objItem = {
           where: {
             key: "id",
-            value: data[index][map],
+            value: itemFound[map],
           },
         };
         if (include[i].include) {
           objItem.include = include[i].include;
         }
-        data[index][as] = await model.findOne(objItem);
-        item = { ...data[index] };
+        itemFound[as] = await model.findOne(objItem);
+        item = { ...itemFound };
       }
       return { ...item };
     }
-    return data[index];
+    return itemFound;
   } else {
     return {
       message: "Find by ID",

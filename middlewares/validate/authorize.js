@@ -1,4 +1,4 @@
-const { User } = require("../../services/index.service");
+const { User, userType } = require("../../services/index.service");
 
 const authorize = (typeArr) => {
   return async (req, res, next) => {
