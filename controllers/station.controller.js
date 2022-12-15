@@ -102,8 +102,10 @@ const findStationByKeyword = async (req, res) => {
     const item = await Station.findAll({
       include: [{ model: Province, as: "stationProvince", map: "provinceId" }],
       where: {
-        key: "name",
-        value: keyword,
+        or: [
+          { where: { key: "name", value: keyword, like: true } },
+          { where: { key: "address", value: keyword, like: true } },
+        ],
       },
     });
     res.status(200).send(item);

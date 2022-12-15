@@ -118,6 +118,15 @@ const findByKeyword = async (req, res) => {
         key: "name",
         value: keyword,
       },
+
+      where: {
+        or: [
+          { where: { key: "name", value: keyword, like:true } },
+          { where: { key: "description", value: keyword, like:true } },
+          { where: { key: "address", value: keyword, like:true } },
+          { where: { key: "content", value: keyword, like:true } }
+        ],
+      },
     });
     res.status(200).send(result);
   } catch (error) {

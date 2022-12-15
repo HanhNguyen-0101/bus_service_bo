@@ -148,10 +148,7 @@ const findByKeyword = async (req, res) => {
           ],
         },
       ],
-      where: {
-        key: "name",
-        value: keyword,
-      },
+      where: { key: "name", value: keyword, like: true }
     });
     res.status(200).send(item);
   } catch (error) {

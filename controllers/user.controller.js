@@ -213,8 +213,11 @@ const findUserByKeyword = async (req, res) => {
         },
       ],
       where: {
-        key: "email",
-        value: keyword,
+        or: [
+          { where: { key: "name", value: keyword, like:true } },
+          { where: { key: "email", value: keyword, like:true } },
+          { where: { key: "phone", value: keyword, like:true } },
+        ]
       },
     });
     res.status(200).send(user);
