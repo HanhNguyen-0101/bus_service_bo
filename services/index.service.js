@@ -271,7 +271,7 @@ module.exports = {
     findOne: (obj) => findOne("global/payment-method", obj),
     destroy: (obj) => destroy("global/payment-method", obj),
     create: (item) => create("global/payment-method", item),
-    update: (item) => update("global/payment-method", id, item),
+    update: (id, item) => update("global/payment-method", id, item),
   },
   busType: {
     findAll: () => findAll("global/bus-type"),
