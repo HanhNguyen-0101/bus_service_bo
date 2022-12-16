@@ -390,7 +390,7 @@ const getArticleByHashtagSubTitle = async (req, res) => {
       key: "subTitle",
       value: subTitle,
     });
-    const hashTag = item?.hashtag;
+    const hashTag = item ? item.hashtag : null;
     if (
       hashTag &&
       hashTagId &&
