@@ -182,7 +182,7 @@ const findOne = async (url, obj) => {
   } else {
     if (like) {
       itemFound = lodash.find(data, (i) =>
-        i[key].toString.toLowerCase().includes(value.toString().toLowerCase())
+        i[key].toString().toLowerCase().includes(value.toString().toLowerCase())
       );
     } else {
       itemFound = lodash.find(data, (i) => i[key] == value);
