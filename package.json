@@ -11,6 +11,9 @@
     "mysql2": "^2.3.3",
     "sequelize": "^6.21.3"
   },
+  "engine": {
+    "node": "^19.0.0"
+  },
   "name": "bus_service_bo",
   "version": "1.0.0",
   "description": "book car service",
